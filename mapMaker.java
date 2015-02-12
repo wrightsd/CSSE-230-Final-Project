@@ -12,7 +12,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -141,9 +140,7 @@ public class mapMaker extends JComponent{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String a = "Here should display the related information about the location selected.";
-				JOptionPane.showMessageDialog(frame, "<html><body><p style='width: 300px;'>"+a+"</body></html>", 
-						"Location Information", JOptionPane.INFORMATION_MESSAGE);
+				infoPage newinfo = new infoPage();
 			}
 			
 		});
