@@ -1,7 +1,13 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class GPS {
 	private HashMap<String,Location> locationList;
+	private HashSet<Location> settledLocations;
+	private HashSet<Location> unSettledLocations;
+	private HashMap<Location, Integer> distance;
+	private HashMap<Location, Location> predecessors;
 
 	/**
 	 * Creates a HashMap of Locations, and instantiates all their connections.
@@ -381,6 +387,8 @@ public class GPS {
 		locationList.put("FieldOfCelebrant", FieldOfCelebrant);
 		locationList.put("Fornost", Fornost);
 		locationList.put("Pelargir", Pelargir);
+		
+		
 	}
 
 	/**
@@ -394,4 +402,106 @@ public class GPS {
 	public Location getLocation(String input) {
 		return (Location) this.locationList.get(input);
 	}
+	
+	/**
+	 * Calculates and returns the shortest path from a given start and end location.
+	 * @param startL, a string representing the start location.
+	 * @param endL, a string representing the end location.
+	 * @return
+	 */
+	public ArrayList<Location> findShortestPath(String startL, String endL) {
+		settledLocations = new HashSet<Location>();
+		unSettledLocations = new HashSet<Location>();
+		distance = new HashMap<Location, Integer>();
+		predecessors = new HashMap<Location, Location>();
+		Location start = this.getLocation(startL);
+		Location end = this.getLocation(endL);
+		distance.put(start, 0);
+		this.unSettledLocations.add(start);
+		while (this.unSettledLocations.size() > 0) {
+			Location l = getMinimun();
+			this.settledLocations.add(l);
+			this.unSettledLocations.remove(l);
+			findMinimalDistances(l);
+		}
+		return getPath(end);
+		
+		
+	}
+
+	
+	/**
+	 * Function that finds the closest location in the unsettledLoctations.
+	 * @return Location
+	 */
+	private Location getMinimun() {
+		Location minimum = null;
+		for(Location l: this.unSettledLocations) {
+			if(minimum == null) {
+				minimum = l;
+			}
+			else {
+				if(getShortestDistance(l) < getShortestDistance(minimum)) {
+					minimum = l;
+				}
+			}
+		}
+		return minimum;
+	}
+	
+	/**
+	 * Function that returns the shortest distance from the specified Location
+	 * to the start location.
+	 * @param Location l, the location where distance is being calculated to.
+	 * @return the distance between location L and the start location.
+	 */
+	private int getShortestDistance(Location l) {
+		Integer dist = distance.get(l);
+		if(dist != null) {
+			return dist;
+		}else return Integer.MAX_VALUE;
+	}
+
+	/**
+	 * Function that calculates distances between neighbors, and finds the shortest of the paths. 
+	 * @param Location l, whose distance between neighbors is being calculated.
+	 */
+	private void findMinimalDistances(Location l) {
+		ArrayList<Location> neighbors = l.getNeighbors(this.settledLocations);
+		for(Location next : neighbors) {
+			if(getShortestDistance(next) > getShortestDistance(l) + l.getDistance(next)) {
+				distance.put(next, getShortestDistance(l) + l.getDistance(next));
+			}
+			this.predecessors.put(next,  l);
+			this.unSettledLocations.add(next);
+		}
+	}
+	
+	/**
+	 * Returns an ArrayList of Locations for the Path from start to end.
+	 * @param Location end, the ending location.
+	 * @return ArrayList of Locations in the path. 
+	 */
+	private ArrayList<Location> getPath(Location end) {
+		ArrayList<Location> pathRev = new ArrayList<Location>();
+		Location current = end;
+		if(predecessors.get(current)== null) {
+			return null;
+		}
+		pathRev.add(current);
+		while (predecessors.get(current) != null) {
+			current = predecessors.get(current);
+			pathRev.add(current);
+		}
+		ArrayList<Location> path = new ArrayList<Location>();
+		for(int k = pathRev.size()-1; k >= 0; k--) {
+			path.add(pathRev.get(k));
+		}
+		return path;
+		
+	}
+	
+	
+	
+	
 }
