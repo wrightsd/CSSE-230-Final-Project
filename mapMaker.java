@@ -1,9 +1,16 @@
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -23,14 +30,48 @@ public class mapMaker extends JComponent{
 	public String character;
 	public String distanceOrTime;
 	public String costInput;
+	private Graphics g;
+	private Graphics2D g2d;
+	private boolean drawMover;
+	private Point2D.Double start;
+	private Point2D.Double end;
+	private Character charac;
 	
 	public mapMaker(JFrame frame) {
 		this.frame = frame;
-		ImageIcon map = new ImageIcon("middle-earth-map.jpg");
-		JLabel mapLabel = new JLabel(map);
-		mapLabel.setMaximumSize(new Dimension(30,20));
-		this.frame.add(mapLabel, BorderLayout.CENTER);
-
+		this.drawMover = false;
+		this.start = null;
+		this.end = null;
+		this.charac = null;
+	}
+	
+	@Override
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		this.g = g;
+		this.g2d = (Graphics2D) g;
+		File mapfile = new File("middle-earth-map.jpg");
+		Image map1 = null;
+		try {
+			map1 = ImageIO.read(mapfile);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
+		this.g2d.drawImage(map1, 30, 50, null);
+		if (drawMover){
+			if (character.equals("Gandalf")){
+				this.charac = new Character(start,"Gandalf",new ImageIcon("gandalf.png"));
+			}
+			if (character.equals("Frodo")){
+				this.charac = new Character(start,"Frodo",new ImageIcon("frodo.gif"));
+			}
+			if (character.equals("Sam")){
+				this.charac = new Character(start,"Sam",new ImageIcon("sam.gif"));
+			}
+			this.charac.drawOn(g2d);
+			timePassed();
+		}
+		
 		JPanel userPanel = new JPanel();
 		userPanel.setLayout(new BoxLayout(userPanel,1));
 		
@@ -104,10 +145,14 @@ public class mapMaker extends JComponent{
 				initialLocation = (String) initialPlaces.getSelectedItem();
 				finalLocation = (String) finalPlacesList.getSelectedItem();
 				character = (String) characterList.getSelectedItem();
-				
-//				System.out.println(initialLocation);
-//				System.out.println(finalLocation);
-//				System.out.println(character);
+				//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+				// change the initial start location info and end location info here!
+				// obtain the info from the location objects
+				start = new Point2D.Double(800,300);
+				end = new Point2D.Double(200,550);
+				//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+				drawMover = true;
+				repaint();
 				System.out.println("Moved!");	
 			}
 		});
@@ -128,6 +173,8 @@ public class mapMaker extends JComponent{
 				initialPlaces.setSelectedIndex(0);
 				characterList.setSelectedIndex(0);
 				group.clearSelection();
+				drawMover = false;
+				repaint();
 				textInput.setText(null);
 			}
 			
@@ -147,6 +194,26 @@ public class mapMaker extends JComponent{
 		userPanel.add(infoButton);
 
 		this.frame.add(userPanel, BorderLayout.EAST);
+		
+	}
+	
+	public void timePassed(){
+		
+			Runnable tickToc = new Runnable(){
+				  @Override
+				public void run(){
+					  try {
+							while (true) {
+								Thread.sleep(30);								
+								charac.updatePosition(end);
+								repaint();
+							}
+						} catch (InterruptedException exception) {
+							// Stop when interrupted
+						}
+				  }
+			};
+			new Thread(tickToc).start();
 	}
 
 }

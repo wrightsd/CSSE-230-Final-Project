@@ -10,12 +10,12 @@ public class mainClass {
 	public static void main(String[] args) {
 		
 		// Creates Frame
-				final JFrame frame = new JFrame("The Fellowship of the Tree");
+				JFrame frame = new JFrame("The Fellowship of the Tree");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setSize(new Dimension(1150, 750));
 
-				new mapMaker(frame);
-
+				mapMaker map = new mapMaker(frame);
+				frame.add(map);
 				// Makes frame visable
 				frame.setVisible(true);
 
