@@ -1,67 +1,75 @@
 import java.util.HashMap;
 
 public class GPS {
-	private HashMap<String,Location> locationList;
+	private HashMap<String, Location> locationList;
 
 	/**
 	 * Creates a HashMap of Locations, and instantiates all their connections.
 	 */
 	public GPS() {
 		// Define the locations
-		Location GreyHavens = new Location(0, 0, "GreyHavens (Mithlond)", 0);
-		Location BlueMountains = new Location(0, 0, "Blue Mountains", 60);
-		Location BagEnd = new Location(0, 0, "Bag End (Hobbiton)", 0);
-		Location GreenDragonInn = new Location(0, 0, "Green Dragon Inn", 5);
-		Location TomBombadilHouse = new Location(0, 0, "Tom Bombadil's House",
-				80);
-		Location BrandywineBridge = new Location(0, 0, "Brandywine Bridge", 10);
-		Location MidgewaterMarshes = new Location(0, 0, "Midgewater Marshes",
+		Location GreyHavens = new Location(36, 45, "GreyHavens (Mithlond)", 0);
+		Location BlueMountains = new Location(35, 60, "Blue Mountains", 60);
+		Location BagEnd = new Location(53, 44, "Bag End (Hobbiton)", 0);
+		Location GreenDragonInn = new Location(55, 43, "Green Dragon Inn", 5);
+		Location TomBombadilHouse = new Location(64, 46,
+				"Tom Bombadil's House", 80);
+		Location BrandywineBridge = new Location(58, 43, "Brandywine Bridge",
+				10);
+		Location MidgewaterMarshes = new Location(73, 43, "Midgewater Marshes",
 				65);
-		Location BarrowDowns = new Location(0, 0, "Barrow Downs", 378);
-		Location Bree = new Location(0, 0, "Prancing Pony (Bree)", 25);
-		Location Weathertop = new Location(0, 0, "Weathertop (Amon Sul)", 15);
-		Location Trollshaws = new Location(0, 0, "Trollshaws", 15);
-		Location Gundabad = new Location(0, 0, "Gundabad", 413);
-		Location Rivendell = new Location(0, 0, "Rivendell (Imladris)", 0);
-		Location Moria = new Location(0, 0, "Mines of Moria (Khazad-dum)", 445);
-		Location Caradhras = new Location(0, 0, "Pass of Caradhras (Redhorn)",
-				30, 415);
-		Location HighPass = new Location(0, 0, "High Pass (Goblin Town)", 150);
-		Location Lothlorien = new Location(0, 0, "Lothlorien", 0);
-		Location AmonHen = new Location(0, 0, "Amon Hen (The Seat Of Seeing)",
-				73);
-		Location Argonath = new Location(0, 0, "Argonath", 15);
-		Location FallsOfRauros = new Location(0, 0, "Falls of Rauros", 45);
-		Location Isengard = new Location(0, 0, "Isengard (Orthanc)", 278);
-		Location FordsOfIsen = new Location(0, 0, "Fords of Isen", 45);
-		Location Fangorn = new Location(0, 0, "Fangorn", 55, 147);
-		Location HelmsDeep = new Location(0, 0, "Helm's Deep", 10);
-		Location DolGuldur = new Location(0, 0, "Dol Guldur (Amon Lanc)", 615);
-		Location WoodlandRealm = new Location(0, 0, "Woodland Realm", 278);
-		Location Erebor = new Location(0, 0, "Erebor (The Lonely Mountain)", 83);
-		Location Esgaroth = new Location(0, 0, "Esgaroth (Lake Town)", 38);
-		Location Dale = new Location(0, 0, "Dale", 29);
-		Location IronHills = new Location(0, 0, "Iron Hills", 67);
-		Location DeadMarshes = new Location(0, 0, "Dead Marshes", 543);
-		Location BlackGate = new Location(0, 0, "Black Gate (Morannon)", 538);
-		Location MountDoom = new Location(0, 0, "Mount Doom (Orodruin)", 398);
-		Location CirithUngol = new Location(0, 0,
+		Location BarrowDowns = new Location(63, 50, "Barrow Downs", 378);
+		Location Bree = new Location(68, 45, "Prancing Pony (Bree)", 25);
+		Location Weathertop = new Location(79, 43, "Weathertop (Amon Sul)", 15);
+		Location Trollshaws = new Location(97, 42, "Trollshaws", 15);
+		Location Gundabad = new Location(105, 20, "Gundabad", 413);
+		Location Rivendell = new Location(103, 43, "Rivendell (Imladris)", 0);
+		Location Moria = new Location(100, 62, "Mines of Moria (Khazad-dum)",
+				445);
+		Location Caradhras = new Location(104, 60,
+				"Pass of Caradhras (Redhorn)", 30, 415);
+		Location HighPass = new Location(110, 40, "High Pass (Goblin Town)",
+				150);
+		Location Lothlorien = new Location(110, 68, "Lothlorien", 0);
+		Location AmonHen = new Location(126, 95,
+				"Amon Hen (The Seat Of Seeing)", 73);
+		Location Argonath = new Location(126, 99, "Argonath", 15);
+		Location FallsOfRauros = new Location(128, 100, "Falls of Rauros", 45);
+		Location Isengard = new Location(93, 87, "Isengard (Orthanc)", 278);
+		Location FordsOfIsen = new Location(93, 93, "Fords of Isen", 45);
+		Location Fangorn = new Location(104, 85, "Fangorn", 55, 147);
+		Location HelmsDeep = new Location(98, 98, "Helm's Deep", 10);
+		Location DolGuldur = new Location(125, 66, "Dol Guldur (Amon Lanc)",
+				615);
+		Location WoodlandRealm = new Location(135, 30, "Woodland Realm", 278);
+		Location Erebor = new Location(142, 28, "Erebor (The Lonely Mountain)",
+				83);
+		Location Esgaroth = new Location(143, 32, "Esgaroth (Lake Town)", 38);
+		Location Dale = new Location(143, 29, "Dale", 29);
+		Location IronHills = new Location(167, 28, "Iron Hills", 67);
+		Location DeadMarshes = new Location(137, 98, "Dead Marshes", 543);
+		Location BlackGate = new Location(145, 99, "Black Gate (Morannon)", 538);
+		Location MountDoom = new Location(151, 108, "Mount Doom (Orodruin)",
+				398);
+		Location CirithUngol = new Location(144, 113,
 				"Stairs of Cirith Ungol (Shelob's Lair)", 567);
-		Location MinasMorgul = new Location(0, 0, "Minas Morgul (Minas Ithil)",
-				543);
-		Location Baraddur = new Location(0, 0, "The Black Tower (Barad-dur)",
-				656);
-		Location Harad = new Location(0, 0, "Harad", 436);
-		Location MinasTirith = new Location(0, 0, "Minas Tirith (Minas Arnor)",
-				78);
-		Location Osgiliath = new Location(0, 0, "Osgiliath", 432);
-		Location Rhosgobel = new Location(0, 0, "Rhosgobel (Brownhay)", 0);
-		Location Meduseld = new Location(0, 0, "Meduseld (The Golden Hall)", 64);
-		Location Dunharrow = new Location(0, 0,
+		Location MinasMorgul = new Location(141, 113,
+				"Minas Morgul (Minas Ithil)", 543);
+		Location Baraddur = new Location(160, 105,
+				"The Black Tower (Barad-dur)", 656);
+		Location Harad = new Location(170, 158, "Harad", 436);
+		Location MinasTirith = new Location(137, 113,
+				"Minas Tirith (Minas Arnor)", 78);
+		Location Osgiliath = new Location(138, 113, "Osgiliath", 432);
+		Location Rhosgobel = new Location(127, 60, "Rhosgobel (Brownhay)", 0);
+		Location Meduseld = new Location(105, 101,
+				"Meduseld (The Golden Hall)", 64);
+		Location Dunharrow = new Location(103, 103,
 				"Entrance to the Paths of the Dead (Dunharrow)", 602);
-		Location FieldOfCelebrant = new Location(0, 0, "Field of Celebrant", 67);
-		Location Fornost = new Location(0, 0, "Fornost (Deadman's Dike)", 47);
-		Location Pelargir = new Location(0, 0, "Pelargir", 52);
+		Location FieldOfCelebrant = new Location(118, 76, "Field of Celebrant",
+				67);
+		Location Fornost = new Location(65, 34, "Fornost (Deadman's Dike)", 47);
+		Location Pelargir = new Location(132, 128, "Pelargir", 52);
 
 		// Define the connections
 		{
