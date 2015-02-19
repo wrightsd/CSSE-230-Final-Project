@@ -52,6 +52,8 @@ public class Location {
 	 */
 	public Location(int gridX,int gridY,String placeName, int lowerCost, int higherCost) {
 		this.name = placeName;
+		this.gridX = gridX;
+		this.gridY = gridY;
 		this.locationCostList.add(lowerCost);
 		this.locationCostList.add(higherCost);
 
@@ -138,6 +140,13 @@ public class Location {
 		return Integer.MAX_VALUE;
 	}
 	
+	/**
+	 * Returns the name of the location.
+	 * @return the name of the location.
+	 */
+	public String getName() {
+		return this.name;
+	}
 	
 	/**
 	 * Finds the connection to the next location and gives the overall cost.
@@ -150,13 +159,5 @@ public class Location {
 				return connection.getOverallCost();
 			}
 		}return Integer.MAX_VALUE;
-	}
-	
-	/**
-	 * Returns the name of the location.
-	 * @return the name of the location.
-	 */
-	public String getName() {
-		return this.name;
 	}
 }
