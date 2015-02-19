@@ -18,7 +18,6 @@ public class mainClass {
 				frame.add(map);
 				// Makes frame visable
 				frame.setVisible(true);
-
 	}
 
 }

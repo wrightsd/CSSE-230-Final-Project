@@ -1,14 +1,26 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 
 public class GPS {
+
+	private HashSet<Location> settledLocations;
+	private HashSet<Location> unSettledLocations;
+	private HashMap<Location, Integer> distance;
+	private HashMap<Location, Location> predecessors;
 	private HashMap<String, Location> locationList;
+	private HashMap<Location, Integer> danger;
+
 
 	/**
 	 * Creates a HashMap of Locations, and instantiates all their connections.
 	 */
 	public GPS() {
 		// Define the locations
-		Location GreyHavens = new Location(36, 45, "GreyHavens (Mithlond)", 0);
+		Location GreyHavens = new Location(36, 45, "Grey Havens (Mithlond)", 0);
 		Location BlueMountains = new Location(35, 60, "Blue Mountains", 60);
 		Location BagEnd = new Location(53, 44, "Bag End (Hobbiton)", 0);
 		Location GreenDragonInn = new Location(55, 43, "Green Dragon Inn", 5);
@@ -19,12 +31,12 @@ public class GPS {
 		Location MidgewaterMarshes = new Location(73, 43, "Midgewater Marshes",
 				65);
 		Location BarrowDowns = new Location(63, 50, "Barrow Downs", 378);
-		Location Bree = new Location(68, 45, "Prancing Pony (Bree)", 25);
+		Location Bree = new Location(68, 45, "Bree (Prancing Pony)", 25);
 		Location Weathertop = new Location(79, 43, "Weathertop (Amon Sul)", 15);
 		Location Trollshaws = new Location(97, 42, "Trollshaws", 15);
 		Location Gundabad = new Location(105, 20, "Gundabad", 413);
 		Location Rivendell = new Location(103, 43, "Rivendell (Imladris)", 0);
-		Location Moria = new Location(100, 62, "Mines of Moria (Khazad-dum)",
+		Location Moria = new Location(100, 62, "Moria (Khazad-dum)",
 				445);
 		Location Caradhras = new Location(104, 60,
 				"Pass of Caradhras (Redhorn)", 30, 415);
@@ -52,11 +64,11 @@ public class GPS {
 		Location MountDoom = new Location(151, 108, "Mount Doom (Orodruin)",
 				398);
 		Location CirithUngol = new Location(144, 113,
-				"Stairs of Cirith Ungol (Shelob's Lair)", 567);
+				"Cirith Ungol (Shelob's Lair)", 567);
 		Location MinasMorgul = new Location(141, 113,
 				"Minas Morgul (Minas Ithil)", 543);
 		Location Baraddur = new Location(160, 105,
-				"The Black Tower (Barad-dur)", 656);
+				"Barad-dur (The Black Tower)", 656);
 		Location Harad = new Location(170, 158, "Harad", 436);
 		Location MinasTirith = new Location(137, 113,
 				"Minas Tirith (Minas Arnor)", 78);
@@ -65,7 +77,7 @@ public class GPS {
 		Location Meduseld = new Location(105, 101,
 				"Meduseld (The Golden Hall)", 64);
 		Location Dunharrow = new Location(103, 103,
-				"Entrance to the Paths of the Dead (Dunharrow)", 602);
+				"Dunharrow (Entrance to the Paths of the Dead)", 602);
 		Location FieldOfCelebrant = new Location(118, 76, "Field of Celebrant",
 				67);
 		Location Fornost = new Location(65, 34, "Fornost (Deadman's Dike)", 47);
@@ -344,14 +356,14 @@ public class GPS {
 
 		// Adds the locations to the HashMap
 
-		locationList.put("GreyHavens", GreyHavens);
-		locationList.put("BlueMountains", BlueMountains);
-		locationList.put("BagEnd", BagEnd);
-		locationList.put("GreenDragonInn", GreenDragonInn);
-		locationList.put("TomBombadilHouse", TomBombadilHouse);
-		locationList.put("BrandywineBridge", BrandywineBridge);
-		locationList.put("MidgewaterMarshes", MidgewaterMarshes);
-		locationList.put("BarrowDowns", BarrowDowns);
+		locationList.put("Grey Havens", GreyHavens);
+		locationList.put("Blue Mountains", BlueMountains);
+		locationList.put("Bag End", BagEnd);
+		locationList.put("Green Dragon Inn", GreenDragonInn);
+		locationList.put("Tom Bombadil House", TomBombadilHouse);
+		locationList.put("Brandywine Bridge", BrandywineBridge);
+		locationList.put("Midgewater Marshes", MidgewaterMarshes);
+		locationList.put("Barrow Downs", BarrowDowns);
 		locationList.put("Bree", Bree);
 		locationList.put("Weathertop", Weathertop);
 		locationList.put("Trollshaws", Trollshaws);
@@ -359,36 +371,38 @@ public class GPS {
 		locationList.put("Rivendell", Rivendell);
 		locationList.put("Moria", Moria);
 		locationList.put("Caradhras", Caradhras);
-		locationList.put("HighPass", HighPass);
+		locationList.put("High Pass", HighPass);
 		locationList.put("Lothlorien", Lothlorien);
-		locationList.put("AmonHen", AmonHen);
+		locationList.put("Amon Hen", AmonHen);
 		locationList.put("Argonath", Argonath);
-		locationList.put("FallsOfRauros", FallsOfRauros);
+		locationList.put("Falls Of Rauros", FallsOfRauros);
 		locationList.put("Isengard", Isengard);
-		locationList.put("FordsOfIsen", FordsOfIsen);
+		locationList.put("Fords Of Isen", FordsOfIsen);
 		locationList.put("Fangorn", Fangorn);
-		locationList.put("HelmsDeep", HelmsDeep);
-		locationList.put("DolGuldur", DolGuldur);
-		locationList.put("WoodlandRealm", WoodlandRealm);
+		locationList.put("Helms Deep", HelmsDeep);
+		locationList.put("Dol Guldur", DolGuldur);
+		locationList.put("Woodland Realm", WoodlandRealm);
 		locationList.put("Erebor", Erebor);
 		locationList.put("Esgaroth", Esgaroth);
 		locationList.put("Dale", Dale);
-		locationList.put("IronHills", IronHills);
-		locationList.put("DeadMarshes", DeadMarshes);
-		locationList.put("BlackGate", BlackGate);
-		locationList.put("MountDoom", MountDoom);
-		locationList.put("CirithUngol", CirithUngol);
-		locationList.put("MinasMorgul", MinasMorgul);
-		locationList.put("Baraddur", Baraddur);
+		locationList.put("Iron Hills", IronHills);
+		locationList.put("Dead Marshes", DeadMarshes);
+		locationList.put("Black Gate", BlackGate);
+		locationList.put("Mount Doom", MountDoom);
+		locationList.put("Cirith Ungol", CirithUngol);
+		locationList.put("Minas Morgul", MinasMorgul);
+		locationList.put("Barad-dur", Baraddur);
 		locationList.put("Harad", Harad);
-		locationList.put("MinasTirith", MinasTirith);
+		locationList.put("Minas Tirith", MinasTirith);
 		locationList.put("Osgiliath", Osgiliath);
 		locationList.put("Rhosgobel", Rhosgobel);
 		locationList.put("Meduseld", Meduseld);
 		locationList.put("Dunharrow", Dunharrow);
-		locationList.put("FieldOfCelebrant", FieldOfCelebrant);
+		locationList.put("Field Of Celebrant", FieldOfCelebrant);
 		locationList.put("Fornost", Fornost);
 		locationList.put("Pelargir", Pelargir);
+		
+		
 	}
 
 	/**
@@ -402,4 +416,208 @@ public class GPS {
 	public Location getLocation(String input) {
 		return (Location) this.locationList.get(input);
 	}
+	
+	/**
+	 * Calculates and returns the shortest path from a given start and end location.
+	 * @param startL, a string representing the start location.
+	 * @param endL, a string representing the end location.
+	 * @return
+	 */
+	public void findShortestPaths(String startL, int restriction) {
+		Location start = this.getLocation(startL);
+		settledLocations = new HashSet<Location>();
+		unSettledLocations = new HashSet<Location>();
+		distance = new HashMap<Location, Integer>();
+		predecessors = new HashMap<Location, Location>();
+		distance.put(start, 0);
+		this.unSettledLocations.add(start);
+		while (this.unSettledLocations.size() > 0) {
+			Location l = getMinimun();
+			this.settledLocations.add(l);
+			this.unSettledLocations.remove(l);
+			findMinimalDistances(l, restriction);
+		}
+	}
+	
+	/**
+	 * Returns a list of all possible places that one can travel to.
+	 * @return an arraylist of Location names.
+	 */
+	public ArrayList<String> getDistanceList() {
+		Set<Location> locations = distance.keySet();
+		Iterator<Location> i = locations.iterator();
+		ArrayList<String> destinations = new ArrayList<String>();
+		while(i.hasNext()) {
+			destinations.add(i.next().getName());
+		}
+		return destinations;
+	}
+
+	
+	/**
+	 * Function that finds the closest location in the unsettledLoctations.
+	 * @return Location
+	 */
+	private Location getMinimun() {
+		Location minimum = null;
+		for(Location l: this.unSettledLocations) {
+			if(minimum == null) {
+				minimum = l;
+			}
+			else {
+				if(getShortestDistance(l) < getShortestDistance(minimum)) {
+					minimum = l;
+				}
+			}
+		}
+		return minimum;
+	}
+	
+	/**
+	 * Function that returns the shortest distance from the specified Location
+	 * to the start location.
+	 * @param Location l, the location where distance is being calculated to.
+	 * @return the distance between location L and the start location.
+	 */
+	private int getShortestDistance(Location l) {
+		Integer dist = distance.get(l);
+		if(dist != null) {
+			return dist;
+		}else return Integer.MAX_VALUE;
+	}
+
+	/**
+	 * Function that calculates distances between neighbors, and finds the shortest of the paths. 
+	 * @param Location l, whose distance between neighbors is being calculated.
+	 */
+	private void findMinimalDistances(Location l, int restriction) {
+		ArrayList<Location> neighbors = l.getNeighbors(this.settledLocations);
+		for(Location next : neighbors) {
+			int chkdist = getShortestDistance(l) + l.getDistance(next);
+			if (getShortestDistance(next) > chkdist) {
+				if (chkdist <= restriction) {
+					distance.put(next,
+							getShortestDistance(l) + l.getDistance(next));
+					this.predecessors.put(next, l);
+					this.unSettledLocations.add(next);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Returns an ArrayList of Locations for the Path from start to end.
+	 * @param Location end, the ending location.
+	 * @return ArrayList of Locations in the path. 
+	 */
+	public ArrayList<Location> getPath(String e) {
+		Location end = this.getLocation(e);
+		ArrayList<Location> pathRev = new ArrayList<Location>();
+		Location current = end;
+		if(predecessors.get(current)== null) {
+			return null;
+		}
+		pathRev.add(current);
+		while (predecessors.get(current) != null) {
+			current = predecessors.get(current);
+			pathRev.add(current);
+		}
+		ArrayList<Location> path = new ArrayList<Location>();
+		for(int k = pathRev.size()-1; k >= 0; k--) {
+			path.add(pathRev.get(k));
+		}
+		return path;
+		
+	}
+	/**
+	 * Returns the path with the lowest danger rating, and thus takes a minimal amount of time.
+	 * @param startL the starting location
+	 * @param endL the ending location
+	 * @return an arrayList of locations that make up the path
+	 */
+	public void findLeastDangerousPaths(String startL, int restriction) {
+		settledLocations = new HashSet<Location>();
+		unSettledLocations = new HashSet<Location>();
+		danger = new HashMap<Location, Integer>();
+		predecessors = new HashMap<Location, Location>();
+		Location start = this.getLocation(startL);
+		danger.put(start, 0);
+		this.unSettledLocations.add(start);
+		while (this.unSettledLocations.size() > 0) {
+			Location l = getMinimunDanger();
+			this.settledLocations.add(l);
+			this.unSettledLocations.remove(l);
+			findMinimalDanger(l, restriction);
+		}
+			
+	}
+	/**
+	 * Finds the list of possible locations to travel to and returns them as 
+	 * a string of their names.
+	 * @return
+	 */
+	public ArrayList<String> getDangerList() {
+		Set<Location> locations = danger.keySet();
+		Iterator<Location> i = locations.iterator();
+		ArrayList<String> destinations = new ArrayList<String>();
+		while(i.hasNext()) {
+			destinations.add(i.next().getName());
+		}
+		return destinations;
+	}
+	
+	/**
+	 * Function that finds the closest location in the unsettledLoctations.
+	 * @return Location
+	 */
+	private Location getMinimunDanger() {
+		Location minimum = null;
+		for(Location l: this.unSettledLocations) {
+			if(minimum == null) {
+				minimum = l;
+			}
+			else {
+				if(getLeastDanger(l) < getLeastDanger(minimum)) {
+					minimum = l;
+				}
+			}
+		}
+		return minimum;
+	}
+	
+	/**
+	 * Function that returns the shortest distance from the specified Location
+	 * to the start location.
+	 * @param Location l, the location where distance is being calculated to.
+	 * @return the distance between location L and the start location.
+	 */
+	private int getLeastDanger(Location l) {
+		Integer dang = danger.get(l);
+		if(dang != null) {
+			return dang;
+		}else return Integer.MAX_VALUE;
+	}
+
+	/**
+	 * Function that calculates distances between neighbors, and finds the shortest of the paths. 
+	 * @param Location l, whose distance between neighbors is being calculated.
+	 */
+	private void findMinimalDanger(Location l, int restriction) {
+		ArrayList<Location> neighbors = l.getNeighbors(this.settledLocations);
+		for (Location next : neighbors) {
+			int chkcost = getLeastDanger(l) + l.getOverallCost(next)+ next.getCost();
+			if (getLeastDanger(next) > chkcost) {
+				if (chkcost <= restriction) {
+					danger.put(next, chkcost);
+					this.predecessors.put(next, l);
+					this.unSettledLocations.add(next);
+				}
+			}
+		}
+	}
+	
+	public HashMap<String, Location> getList(){
+		return this.locationList;
+	}
+		
 }

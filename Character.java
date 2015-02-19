@@ -20,12 +20,15 @@ public class Character extends Mover{
 		this.img = img;
 	}
 	
+	public void setCtPt(Point2D.Double CtPt){
+		centerPoint = new Point2D.Double(CtPt.x,CtPt.y);
+	}
 	public Point2D.Double getCtPt(){
 		return centerPoint;
 	}
 	
 	@Override
 	public void drawOn(Graphics2D g2d){
-		g2d.drawImage(this.img.getImage(),(int)centerPoint.x,(int)centerPoint.y,60,100, null);
+		g2d.drawImage(this.img.getImage(),(int)centerPoint.x-30,(int)centerPoint.y-50,60,100, null);
 	}
 }
