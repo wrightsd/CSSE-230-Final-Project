@@ -12,8 +12,7 @@ public class PathfindingTest {
 
 	public static void main(String[] args) {
 		GPS gps = new GPS();
-		
-		
+
 		gps.findShortestPaths("BagEnd",  Integer.MAX_VALUE);	
 		ArrayList<Location> route = gps.getPath("MountDoom");
 		
