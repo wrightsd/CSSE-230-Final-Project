@@ -44,15 +44,15 @@ public class Location {
 	 *            an int that is the y position of the location on the map
 	 * @param placeName
 	 *            a String that is the name of the Location
-	 * @param lowerCost
-	 *            an int that is the lesser cost of the Location
-	 * @param higherCost
-	 *            an int that is the higher cost of the Location
+	 * @param costList
+	 *            an ArrayList with two integers that gives the differing
+	 *            location costs
 	 */
-	public Location(int gridX,int gridY,String placeName, int lowerCost, int higherCost) {
+	public Location(int gridX, int gridY, String placeName, ArrayList costList) {
 		this.name = placeName;
-		this.locationCostList.add(lowerCost);
-		this.locationCostList.add(higherCost);
+		this.gridX = gridX;
+		this.gridY = gridY;
+		this.locationCostList = costList;
 
 	}
 
@@ -82,22 +82,22 @@ public class Location {
 		}
 		return (int) locationCostList.get(1);
 	}
-	
+
 	/**
 	 * Returns the x position of the Location object.
 	 * 
 	 * @return an int which is the x position of the Location
 	 */
-	public int getGridX(){
+	public int getGridX() {
 		return this.gridX;
 	}
-	
+
 	/**
 	 * Returns the y position of the Location object.
 	 * 
 	 * @return an int which is the y position of the Location
 	 */
-	public int getGridY(){
+	public int getGridY() {
 		return this.gridY;
 	}
 }

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GPS {
@@ -26,8 +27,11 @@ public class GPS {
 		Location Rivendell = new Location(103, 43, "Rivendell (Imladris)", 0);
 		Location Moria = new Location(100, 62, "Mines of Moria (Khazad-dum)",
 				445);
+		ArrayList<Integer> CaradhrasCost = new ArrayList<Integer>();
+		CaradhrasCost.add(30);
+		CaradhrasCost.add(415);
 		Location Caradhras = new Location(104, 60,
-				"Pass of Caradhras (Redhorn)", 30, 415);
+				"Pass of Caradhras (Redhorn)", CaradhrasCost);
 		Location HighPass = new Location(110, 40, "High Pass (Goblin Town)",
 				150);
 		Location Lothlorien = new Location(110, 68, "Lothlorien", 0);
@@ -37,7 +41,10 @@ public class GPS {
 		Location FallsOfRauros = new Location(128, 100, "Falls of Rauros", 45);
 		Location Isengard = new Location(93, 87, "Isengard (Orthanc)", 278);
 		Location FordsOfIsen = new Location(93, 93, "Fords of Isen", 45);
-		Location Fangorn = new Location(104, 85, "Fangorn", 55, 147);
+		ArrayList<Integer> FangornCost = new ArrayList<Integer>();
+		FangornCost.add(55);
+		FangornCost.add(147);
+		Location Fangorn = new Location(104, 85, "Fangorn", FangornCost);
 		Location HelmsDeep = new Location(98, 98, "Helm's Deep", 10);
 		Location DolGuldur = new Location(125, 66, "Dol Guldur (Amon Lanc)",
 				615);
@@ -401,5 +408,79 @@ public class GPS {
 	 */
 	public Location getLocation(String input) {
 		return (Location) this.locationList.get(input);
+	}
+
+	/**
+	 * Adds a new Location with a single Location cost to the hashmap of
+	 * locations and sets its connections.
+	 * 
+	 * @param gridX
+	 *            an int giving the x location of the Location on the map
+	 * @param gridY
+	 *            an int giving the y location of the Location on the map
+	 * @param placeName
+	 *            a String giving the name of the new Location
+	 * @param pointCost
+	 *            an int giving the cost of the single location
+	 * @param nameList
+	 *            an ArrayList of Strings giving the other Locations the new
+	 *            Location should be connected to
+	 * @param distanceCosts
+	 *            an ArrayList of ints that gives the distance costs from the
+	 *            new Location to the specified Location
+	 * @param dangerCosts
+	 *            an ArrayList of ints that gives the overall costs from the new
+	 *            Location to the specified Location
+	 */
+	public void addNewConnectionWithSingleCost(int gridX, int gridY,
+			String placeName, int pointCost, ArrayList<String> nameList,
+			ArrayList<Integer> distanceCosts, ArrayList<Integer> dangerCosts) {
+		Location newOne = new Location(gridX, gridY, placeName, pointCost);
+		for (int i = 0; i < nameList.size(); i++) {
+			Location currentName = locationList.get(nameList.get(i));
+			int currentDistance = distanceCosts.get(i);
+			int currentDanger = dangerCosts.get(i);
+			newOne.addConnection(new Path(currentName, currentDistance,
+					currentDanger));
+			currentName.addConnection(new Path(newOne, currentDistance,
+					currentDanger));
+		}
+	}
+	
+	/**
+	 * Adds a new Location with an ArrayList of Location costs to the hashmap of
+	 * locations and sets its connections.
+	 * 
+	 * @param gridX
+	 *            an int giving the x location of the Location on the map
+	 * @param gridY
+	 *            an int giving the y location of the Location on the map
+	 * @param placeName
+	 *            a String giving the name of the new Location
+	 * @param listOfCosts
+	 *            an ArrayList of Location costs
+	 * @param nameList
+	 *            an ArrayList of Strings giving the other Locations the new
+	 *            Location should be connected to
+	 * @param distanceCosts
+	 *            an ArrayList of ints that gives the distance costs from the
+	 *            new Location to the specified Location
+	 * @param dangerCosts
+	 *            an ArrayList of ints that gives the overall costs from the new
+	 *            Location to the specified Location
+	 */
+	public void addNewConnectionWithMultipleCost(int gridX, int gridY,
+			String placeName, ArrayList<Integer> pointCosts, ArrayList<String> nameList,
+			ArrayList<Integer> distanceCosts, ArrayList<Integer> dangerCosts) {
+		Location newOne = new Location(gridX, gridY, placeName, pointCosts);
+		for (int i = 0; i < nameList.size(); i++) {
+			Location currentName = locationList.get(nameList.get(i));
+			int currentDistance = distanceCosts.get(i);
+			int currentDanger = dangerCosts.get(i);
+			newOne.addConnection(new Path(currentName, currentDistance,
+					currentDanger));
+			currentName.addConnection(new Path(newOne, currentDistance,
+					currentDanger));
+		}
 	}
 }
