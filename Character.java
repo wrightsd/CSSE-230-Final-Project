@@ -23,6 +23,7 @@ public class Character extends Mover{
 	public void setCtPt(Point2D.Double CtPt){
 		centerPoint = new Point2D.Double(CtPt.x,CtPt.y);
 	}
+
 	public Point2D.Double getCtPt(){
 		return centerPoint;
 	}

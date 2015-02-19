@@ -30,6 +30,7 @@ public abstract class Mover {
 	
 	public void updatePosition(){
 		this.centerPoint.setLocation(this.centerPoint.x+Vx,this.centerPoint.y+Vy);
+
 	}
 	
 	public abstract void drawOn(Graphics2D g2d);

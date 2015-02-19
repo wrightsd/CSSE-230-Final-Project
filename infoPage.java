@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 
 public class infoPage {
+
 	private JFrame infoFrame;
 	// private JTextArea textPanel;// was JPANEL
 	private JPanel textPanel;
@@ -68,5 +69,6 @@ public class infoPage {
 		redraw();
 		infoFrame.setVisible(true);
 	}
-
 }
+
+
