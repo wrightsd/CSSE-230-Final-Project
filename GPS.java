@@ -510,6 +510,80 @@ public class GPS {
 		return path;
 		
 	}
+	/**
+	 * Returns the path with the lowest danger rating, and thus takes a minimal amount of time.
+	 * @param startL the starting location
+	 * @param endL the ending location
+	 * @return an arrayList of locations that make up the path
+	 */
+	public ArrayList<Location> findLeastDangerousPath(String startL, String endL) {
+		settledLocations = new HashSet<Location>();
+		unSettledLocations = new HashSet<Location>();
+		danger = new HashMap<Location, Integer>();
+		predecessors = new HashMap<Location, Location>();
+		Location start = this.getLocation(startL);
+		Location end = this.getLocation(endL);
+		danger.put(start, 0);
+		this.unSettledLocations.add(start);
+		while (this.unSettledLocations.size() > 0) {
+			Location l = getMinimunDanger();
+			this.settledLocations.add(l);
+			this.unSettledLocations.remove(l);
+			findMinimalDanger(l);
+		}
+		return getPath(end);
+		
+		
+	}
+
+	
+	/**
+	 * Function that finds the closest location in the unsettledLoctations.
+	 * @return Location
+	 */
+	private Location getMinimunDanger() {
+		Location minimum = null;
+		for(Location l: this.unSettledLocations) {
+			if(minimum == null) {
+				minimum = l;
+			}
+			else {
+				if(getLeastDanger(l) < getLeastDanger(minimum)) {
+					minimum = l;
+				}
+			}
+		}
+		return minimum;
+	}
+	
+	/**
+	 * Function that returns the shortest distance from the specified Location
+	 * to the start location.
+	 * @param Location l, the location where distance is being calculated to.
+	 * @return the distance between location L and the start location.
+	 */
+	private int getLeastDanger(Location l) {
+		Integer dang = danger.get(l);
+		if(dang != null) {
+			return dang;
+		}else return Integer.MAX_VALUE;
+	}
+
+	/**
+	 * Function that calculates distances between neighbors, and finds the shortest of the paths. 
+	 * @param Location l, whose distance between neighbors is being calculated.
+	 */
+	private void findMinimalDanger(Location l) {
+		ArrayList<Location> neighbors = l.getNeighbors(this.settledLocations);
+		for(Location next : neighbors) {
+			int nextcost = next.getCost();
+			if(getLeastDanger(next) > getLeastDanger(l) + l.getDistance(next) + nextcost) {
+				danger.put(next, getLeastDanger(l) + l.getDistance(next) + nextcost);
+				this.predecessors.put(next,  l);
+				this.unSettledLocations.add(next);
+			}
+		}
+	}
 	
 	
 	
