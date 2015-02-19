@@ -1,7 +1,16 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class GPS {
+
+	private HashSet<Location> settledLocations;
+	private HashSet<Location> unSettledLocations;
+	private HashMap<Location, Integer> distance;
+	private HashMap<Location, Location> predecessors;
 	private HashMap<String, Location> locationList;
+	private HashMap<Location, Integer> danger;
+
 
 	/**
 	 * Creates a HashMap of Locations, and instantiates all their connections.
@@ -344,14 +353,14 @@ public class GPS {
 
 		// Adds the locations to the HashMap
 
-		locationList.put("GreyHavens", GreyHavens);
-		locationList.put("BlueMountains", BlueMountains);
-		locationList.put("BagEnd", BagEnd);
-		locationList.put("GreenDragonInn", GreenDragonInn);
-		locationList.put("TomBombadilHouse", TomBombadilHouse);
-		locationList.put("BrandywineBridge", BrandywineBridge);
-		locationList.put("MidgewaterMarshes", MidgewaterMarshes);
-		locationList.put("BarrowDowns", BarrowDowns);
+		locationList.put("Grey Havens", GreyHavens);
+		locationList.put("Blue Mountains", BlueMountains);
+		locationList.put("Bag End", BagEnd);
+		locationList.put("Green Dragon Inn", GreenDragonInn);
+		locationList.put("Tom Bombadil House", TomBombadilHouse);
+		locationList.put("Brandywine Bridge", BrandywineBridge);
+		locationList.put("Midgewater Marshes", MidgewaterMarshes);
+		locationList.put("Barrow Downs", BarrowDowns);
 		locationList.put("Bree", Bree);
 		locationList.put("Weathertop", Weathertop);
 		locationList.put("Trollshaws", Trollshaws);
@@ -359,36 +368,38 @@ public class GPS {
 		locationList.put("Rivendell", Rivendell);
 		locationList.put("Moria", Moria);
 		locationList.put("Caradhras", Caradhras);
-		locationList.put("HighPass", HighPass);
+		locationList.put("High Pass", HighPass);
 		locationList.put("Lothlorien", Lothlorien);
-		locationList.put("AmonHen", AmonHen);
+		locationList.put("Amon Hen", AmonHen);
 		locationList.put("Argonath", Argonath);
-		locationList.put("FallsOfRauros", FallsOfRauros);
+		locationList.put("Falls Of Rauros", FallsOfRauros);
 		locationList.put("Isengard", Isengard);
-		locationList.put("FordsOfIsen", FordsOfIsen);
+		locationList.put("Fords Of Isen", FordsOfIsen);
 		locationList.put("Fangorn", Fangorn);
-		locationList.put("HelmsDeep", HelmsDeep);
-		locationList.put("DolGuldur", DolGuldur);
-		locationList.put("WoodlandRealm", WoodlandRealm);
+		locationList.put("Helms Deep", HelmsDeep);
+		locationList.put("Dol Guldur", DolGuldur);
+		locationList.put("Woodland Realm", WoodlandRealm);
 		locationList.put("Erebor", Erebor);
 		locationList.put("Esgaroth", Esgaroth);
 		locationList.put("Dale", Dale);
-		locationList.put("IronHills", IronHills);
-		locationList.put("DeadMarshes", DeadMarshes);
-		locationList.put("BlackGate", BlackGate);
-		locationList.put("MountDoom", MountDoom);
-		locationList.put("CirithUngol", CirithUngol);
-		locationList.put("MinasMorgul", MinasMorgul);
+		locationList.put("Iron Hills", IronHills);
+		locationList.put("Dead Marshes", DeadMarshes);
+		locationList.put("Black Gate", BlackGate);
+		locationList.put("Mount Doom", MountDoom);
+		locationList.put("Cirith Ungol", CirithUngol);
+		locationList.put("Minas Morgul", MinasMorgul);
 		locationList.put("Baraddur", Baraddur);
 		locationList.put("Harad", Harad);
-		locationList.put("MinasTirith", MinasTirith);
+		locationList.put("Minas Tirith", MinasTirith);
 		locationList.put("Osgiliath", Osgiliath);
 		locationList.put("Rhosgobel", Rhosgobel);
 		locationList.put("Meduseld", Meduseld);
 		locationList.put("Dunharrow", Dunharrow);
-		locationList.put("FieldOfCelebrant", FieldOfCelebrant);
+		locationList.put("Field Of Celebrant", FieldOfCelebrant);
 		locationList.put("Fornost", Fornost);
 		locationList.put("Pelargir", Pelargir);
+		
+		
 	}
 
 	/**
@@ -402,4 +413,184 @@ public class GPS {
 	public Location getLocation(String input) {
 		return (Location) this.locationList.get(input);
 	}
+	
+	/**
+	 * Calculates and returns the shortest path from a given start and end location.
+	 * @param startL, a string representing the start location.
+	 * @param endL, a string representing the end location.
+	 * @return
+	 */
+	public ArrayList<Location> findShortestPath(String startL, String endL) {
+		settledLocations = new HashSet<Location>();
+		unSettledLocations = new HashSet<Location>();
+		distance = new HashMap<Location, Integer>();
+		predecessors = new HashMap<Location, Location>();
+		Location start = this.getLocation(startL);
+		Location end = this.getLocation(endL);
+		distance.put(start, 0);
+		this.unSettledLocations.add(start);
+		while (this.unSettledLocations.size() > 0) {
+			Location l = getMinimun();
+			this.settledLocations.add(l);
+			this.unSettledLocations.remove(l);
+			findMinimalDistances(l);
+		}
+		return getPath(end);
+		
+		
+	}
+
+	
+	/**
+	 * Function that finds the closest location in the unsettledLoctations.
+	 * @return Location
+	 */
+	private Location getMinimun() {
+		Location minimum = null;
+		for(Location l: this.unSettledLocations) {
+			if(minimum == null) {
+				minimum = l;
+			}
+			else {
+				if(getShortestDistance(l) < getShortestDistance(minimum)) {
+					minimum = l;
+				}
+			}
+		}
+		return minimum;
+	}
+	
+	/**
+	 * Function that returns the shortest distance from the specified Location
+	 * to the start location.
+	 * @param Location l, the location where distance is being calculated to.
+	 * @return the distance between location L and the start location.
+	 */
+	private int getShortestDistance(Location l) {
+		Integer dist = distance.get(l);
+		if(dist != null) {
+			return dist;
+		}else return Integer.MAX_VALUE;
+	}
+
+	/**
+	 * Function that calculates distances between neighbors, and finds the shortest of the paths. 
+	 * @param Location l, whose distance between neighbors is being calculated.
+	 */
+	private void findMinimalDistances(Location l) {
+		ArrayList<Location> neighbors = l.getNeighbors(this.settledLocations);
+		for(Location next : neighbors) {
+			if(getShortestDistance(next) > getShortestDistance(l) + l.getDistance(next)) {
+				distance.put(next, getShortestDistance(l) + l.getDistance(next));
+			}
+			this.predecessors.put(next,  l);
+			this.unSettledLocations.add(next);
+		}
+	}
+	
+	/**
+	 * Returns an ArrayList of Locations for the Path from start to end.
+	 * @param Location end, the ending location.
+	 * @return ArrayList of Locations in the path. 
+	 */
+	private ArrayList<Location> getPath(Location end) {
+		ArrayList<Location> pathRev = new ArrayList<Location>();
+		Location current = end;
+		if(predecessors.get(current)== null) {
+			return null;
+		}
+		pathRev.add(current);
+		while (predecessors.get(current) != null) {
+			current = predecessors.get(current);
+			pathRev.add(current);
+		}
+		ArrayList<Location> path = new ArrayList<Location>();
+		for(int k = pathRev.size()-1; k >= 0; k--) {
+			path.add(pathRev.get(k));
+		}
+		return path;
+		
+	}
+	/**
+	 * Returns the path with the lowest danger rating, and thus takes a minimal amount of time.
+	 * @param startL the starting location
+	 * @param endL the ending location
+	 * @return an arrayList of locations that make up the path
+	 */
+	public ArrayList<Location> findLeastDangerousPath(String startL, String endL) {
+		settledLocations = new HashSet<Location>();
+		unSettledLocations = new HashSet<Location>();
+		danger = new HashMap<Location, Integer>();
+		predecessors = new HashMap<Location, Location>();
+		Location start = this.getLocation(startL);
+		Location end = this.getLocation(endL);
+		danger.put(start, 0);
+		this.unSettledLocations.add(start);
+		while (this.unSettledLocations.size() > 0) {
+			Location l = getMinimunDanger();
+			this.settledLocations.add(l);
+			this.unSettledLocations.remove(l);
+			findMinimalDanger(l);
+		}
+		return getPath(end);
+		
+		
+	}
+
+	
+	/**
+	 * Function that finds the closest location in the unsettledLoctations.
+	 * @return Location
+	 */
+	private Location getMinimunDanger() {
+		Location minimum = null;
+		for(Location l: this.unSettledLocations) {
+			if(minimum == null) {
+				minimum = l;
+			}
+			else {
+				if(getLeastDanger(l) < getLeastDanger(minimum)) {
+					minimum = l;
+				}
+			}
+		}
+		return minimum;
+	}
+	
+	/**
+	 * Function that returns the shortest distance from the specified Location
+	 * to the start location.
+	 * @param Location l, the location where distance is being calculated to.
+	 * @return the distance between location L and the start location.
+	 */
+	private int getLeastDanger(Location l) {
+		Integer dang = danger.get(l);
+		if(dang != null) {
+			return dang;
+		}else return Integer.MAX_VALUE;
+	}
+
+	/**
+	 * Function that calculates distances between neighbors, and finds the shortest of the paths. 
+	 * @param Location l, whose distance between neighbors is being calculated.
+	 */
+	private void findMinimalDanger(Location l) {
+		ArrayList<Location> neighbors = l.getNeighbors(this.settledLocations);
+		for(Location next : neighbors) {
+			int nextcost = next.getCost();
+			if(getLeastDanger(next) > getLeastDanger(l) + l.getDistance(next) + nextcost) {
+				danger.put(next, getLeastDanger(l) + l.getDistance(next) + nextcost);
+				this.predecessors.put(next,  l);
+				this.unSettledLocations.add(next);
+			}
+		}
+	}
+	
+	public HashMap<String, Location> getList(){
+		return this.locationList;
+	}
+	
+	
+	
+	
 }

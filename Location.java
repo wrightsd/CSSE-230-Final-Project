@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * The Location object which has connections to other Location object, and a
@@ -10,8 +11,8 @@ import java.util.ArrayList;
 public class Location {
 	private String name;
 	private int locationCost;
-	private ArrayList locationCostList;
-	private ArrayList connections;
+	private ArrayList<Integer> locationCostList = new ArrayList<Integer>();
+	private ArrayList<Path> connections = new ArrayList<Path>();
 	private int gridX;
 	private int gridY;
 
@@ -66,6 +67,28 @@ public class Location {
 	public void addConnection(Path connection) {
 		this.connections.add(connection);
 	}
+	
+	/**
+	 * Returns all paths the current location has.
+	 * @return an ArrayList of paths.
+	 */
+	public ArrayList<Path> getConnections() {
+		return this.connections;
+	}
+	
+	/**
+	 * Returns the neighbors of a the current Location that have not been settled by dijkstra's algorithm.
+	 * @param settledL, a HashSet of settledLocations.
+	 * @return an ArrayList of neighboring locations.
+	 */
+	public ArrayList<Location> getNeighbors(HashSet<Location> settledL) {
+		ArrayList<Location> neighbors = new ArrayList<Location>();
+		for(Path connection: this.connections) {
+			if(!settledL.contains(connection.getNextLocation()) )
+				neighbors.add(connection.getNextLocation());
+		}
+		return neighbors;
+	}
 
 	/**
 	 * Returns the cost of the Location, as well as deciding which cost to
@@ -99,5 +122,27 @@ public class Location {
 	 */
 	public int getGridY(){
 		return this.gridY;
+	}
+	
+	/**
+	 * Returns the distance from this location to the specified location next.
+	 * @param next, the next location
+	 * @return distance from this to next.
+	 */
+	public int getDistance(Location next) {
+		for(Path connection : connections) {
+			if(connection.getNextLocation() == next) {
+				return connection.getDistance();
+			}
+		}//for debugging purposes, should never reach here.
+		return Integer.MAX_VALUE;
+	}
+	
+	/**
+	 * Returns the name of the location.
+	 * @return the name of the location.
+	 */
+	public String getName() {
+		return this.name;
 	}
 }
