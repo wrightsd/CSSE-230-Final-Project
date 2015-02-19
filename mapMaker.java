@@ -88,8 +88,8 @@ public class mapMaker extends JComponent{
 			timePassed();
 		}
 		if (nodes.size() != 0 && charac != null){
-			this.charac.drawOn(g2d);
 			drawPath();
+			this.charac.drawOn(g2d);
 		}
 		
 		JPanel userPanel = new JPanel();
@@ -186,7 +186,17 @@ public class mapMaker extends JComponent{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				costInput = null;
+				initialLocation = null;
+				finalLocation = null;
+				character = null;
+				finalPlacesList.setSelectedIndex(0);
+				initialPlaces.setSelectedIndex(0);
+				characterList.setSelectedIndex(0);
+				group.clearSelection();
+				reset = true;
+				drawMover = false;
+				nodes = new ArrayList<Point2D.Double>();
 				repaint();
 				
 			}
@@ -200,17 +210,7 @@ public class mapMaker extends JComponent{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				JTextArea textArea = new JTextArea(6, 25);
-//				File fl = new File("Info Text");
-//				String a = new String(Files.readAllBytes("C:/EclipseWorkspaces/csse230/The FellowShip of the Tree/Info Text"));
-//			      textArea;
-//			      textArea.setEditable(false);
-//			       
-//			      // wrap a scrollpane around it
-//			      JScrollPane scrollPane = new JScrollPane(textArea);
-//			       
-//			      // display them in a message dialog
-//			      JOptionPane.showMessageDialog(frame, scrollPane);
+				infoPage i = new infoPage();
 			}
 			
 		});
@@ -225,7 +225,7 @@ public class mapMaker extends JComponent{
 				  @Override
 				public void run(){
 					  try {
-						  for (int i = 0; i < nodes.size(); i++){
+						  for (int i = 1; i < nodes.size(); i++){
 							  Point2D.Double currentDest = nodes.get(i);
 							  charac.setEndPoint(currentDest);
 							  double diff = Math.sqrt(Math.pow(currentDest.x-charac.centerPoint.x, 2)+Math.pow(currentDest.y-charac.centerPoint.y, 2));
@@ -314,23 +314,30 @@ public class mapMaker extends JComponent{
 		if (!initialLocation.equals("None") && !finalLocation.equals("None")){
 			if (costInput == null || costInput.length() == 0){
 				if (distanceOrTime == null || distanceOrTime.equals("Distance")){
-					route = this.gps.findShortestPath(initialLocation, finalLocation);
+					this.gps.findShortestPaths(this.initialLocation,Integer.MAX_VALUE);
+					route = this.gps.getPath(finalLocation);
 				}
 				else if (distanceOrTime.equals("Time")){
-					route = this.gps.findLeastDangerousPath(initialLocation, finalLocation);
-				}
-				
-				for (int i = 0; i < route.size(); i++){
-					double x = 4*route.get(i).getGridX()+20;
-					double y = 4*route.get(i).getGridY()+30;
-					nodes.add(new Point2D.Double(x,y));
+					this.gps.findLeastDangerousPaths(initialLocation, Integer.MAX_VALUE);
+					route = this.gps.getPath(finalLocation);
 				}
 			}
 			else{
 				int costinput = Integer.parseInt(costInput);
+				if (distanceOrTime.equals("Distance")){
+					this.gps.findShortestPaths(initialLocation, costinput);
+					route = this.gps.getPath(finalLocation);
+				}
+				else if (distanceOrTime.equals("Time")){
+					this.gps.findLeastDangerousPaths(initialLocation, costinput);
+					route = this.gps.getPath(finalLocation);
+				}
+				else{
+					String infomessage = "You need to specify which one to restrict.";
+					JOptionPane.showMessageDialog(this.frame,infomessage,"Error",JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 		}
-		
 		else if (initialLocation.equals("None")){
 			String infomessage = "You need to select a initial position to start!";
 			JOptionPane.showMessageDialog(this.frame,infomessage,"Error",JOptionPane.INFORMATION_MESSAGE);
@@ -341,7 +348,77 @@ public class mapMaker extends JComponent{
 				String infomessage = "You need to either select a destination or specify your constraints!";
 				JOptionPane.showMessageDialog(this.frame,infomessage,"Error",JOptionPane.INFORMATION_MESSAGE);
 			}
+			else{
+				if (distanceOrTime.equals("Distance")){
+					int costinput = Integer.parseInt(costInput);
+					this.gps.findShortestPaths(initialLocation, costinput);
+					ArrayList<String> destination = this.gps.getDistanceList();
+					String[] possibleDest = new String[destination.size()];
+					for (int i = 0; i < destination.size(); i++){
+						possibleDest[i] = destination.get(i);
+					}
+					this.finalLocation = (String)JOptionPane.showInputDialog(this.frame,
+		                    "Select Your destination",
+		                    "Customized Dialog",
+		                    JOptionPane.PLAIN_MESSAGE,
+		                    null,
+		                    possibleDest,
+		                    possibleDest[0]);
+					this.finalLocation = modifyString(this.finalLocation);
+					System.out.println(this.finalLocation);
+					route = this.gps.getPath(this.finalLocation);
+				}
+				else if (distanceOrTime.equals("Time")){
+					int costinput = Integer.parseInt(costInput);
+					this.gps.findLeastDangerousPaths(initialLocation, costinput);
+					ArrayList<String> destination = this.gps.getDangerList();
+					String[] possibleDest = new String[destination.size()];
+					for (int i = 0; i < destination.size(); i++){
+						possibleDest[i] = destination.get(i);
+					}
+					this.finalLocation = (String)JOptionPane.showInputDialog(this.frame,
+		                    "Select Your destination",
+		                    "Customized Dialog",
+		                    JOptionPane.PLAIN_MESSAGE,
+		                    null,
+		                    possibleDest,
+		                    possibleDest[0]);
+					this.finalLocation = modifyString(this.finalLocation);
+					route = this.gps.getPath(this.finalLocation);
+				}
+				else{
+					String infomessage = "You need to specify which one to restrict.";
+					JOptionPane.showMessageDialog(this.frame,infomessage,"Error",JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+			}
 		}
+		
+		if (route != null){
+			for (int i = 0; i < route.size(); i++){
+				double x = 4*route.get(i).getGridX()+20;
+				double y = 4*route.get(i).getGridY()+30;
+				nodes.add(new Point2D.Double(x,y));
+			}
+		}
+		else {
+			String infomessage = "You cannot travel that far!!!";
+			JOptionPane.showMessageDialog(this.frame,infomessage,"Error",JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+	
+	public String modifyString(String e){
+		String ret = "";
+		for (int i = 0; i < e.length(); i++){
+			if (e.charAt(i) != '('){
+				ret+=e.charAt(i);
+			}
+			else{
+				break;
+			}
+		}
+		ret = ret.substring(0,ret.length()-1);
+		return ret;
 		
 	}
 

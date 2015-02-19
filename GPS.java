@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+
 public class GPS {
 
 	private HashSet<Location> settledLocations;
@@ -19,7 +20,7 @@ public class GPS {
 	 */
 	public GPS() {
 		// Define the locations
-		Location GreyHavens = new Location(36, 45, "GreyHavens (Mithlond)", 0);
+		Location GreyHavens = new Location(36, 45, "Grey Havens (Mithlond)", 0);
 		Location BlueMountains = new Location(35, 60, "Blue Mountains", 60);
 		Location BagEnd = new Location(53, 44, "Bag End (Hobbiton)", 0);
 		Location GreenDragonInn = new Location(55, 43, "Green Dragon Inn", 5);
@@ -30,12 +31,12 @@ public class GPS {
 		Location MidgewaterMarshes = new Location(73, 43, "Midgewater Marshes",
 				65);
 		Location BarrowDowns = new Location(63, 50, "Barrow Downs", 378);
-		Location Bree = new Location(68, 45, "Prancing Pony (Bree)", 25);
+		Location Bree = new Location(68, 45, "Bree (Prancing Pony)", 25);
 		Location Weathertop = new Location(79, 43, "Weathertop (Amon Sul)", 15);
 		Location Trollshaws = new Location(97, 42, "Trollshaws", 15);
 		Location Gundabad = new Location(105, 20, "Gundabad", 413);
 		Location Rivendell = new Location(103, 43, "Rivendell (Imladris)", 0);
-		Location Moria = new Location(100, 62, "Mines of Moria (Khazad-dum)",
+		Location Moria = new Location(100, 62, "Moria (Khazad-dum)",
 				445);
 		ArrayList<Integer> CaradhrasCost = new ArrayList<Integer>();
 		CaradhrasCost.add(30);
@@ -69,11 +70,11 @@ public class GPS {
 		Location MountDoom = new Location(151, 108, "Mount Doom (Orodruin)",
 				398);
 		Location CirithUngol = new Location(144, 113,
-				"Stairs of Cirith Ungol (Shelob's Lair)", 567);
+				"Cirith Ungol (Shelob's Lair)", 567);
 		Location MinasMorgul = new Location(141, 113,
 				"Minas Morgul (Minas Ithil)", 543);
 		Location Baraddur = new Location(160, 105,
-				"The Black Tower (Barad-dur)", 656);
+				"Barad-dur (The Black Tower)", 656);
 		Location Harad = new Location(170, 158, "Harad", 436);
 		Location MinasTirith = new Location(137, 113,
 				"Minas Tirith (Minas Arnor)", 78);
@@ -82,7 +83,7 @@ public class GPS {
 		Location Meduseld = new Location(105, 101,
 				"Meduseld (The Golden Hall)", 64);
 		Location Dunharrow = new Location(103, 103,
-				"Entrance to the Paths of the Dead (Dunharrow)", 602);
+				"Dunharrow (Entrance to the Paths of the Dead)", 602);
 		Location FieldOfCelebrant = new Location(118, 76, "Field of Celebrant",
 				67);
 		Location Fornost = new Location(65, 34, "Fornost (Deadman's Dike)", 47);
@@ -146,7 +147,6 @@ public class GPS {
 			Trollshaws.addConnection(new Path(Weathertop, 155, 162));
 			Trollshaws.addConnection(new Path(Rivendell, 50, 55));
 			Trollshaws.addConnection(new Path(Gundabad, 200, 243));
-			Trollshaws.addConnection(new Path(GreenDragonInn, 375, 395));
 		}
 		{
 			Gundabad.addConnection(new Path(Trollshaws, 200, 243));
@@ -397,7 +397,7 @@ public class GPS {
 		locationList.put("Mount Doom", MountDoom);
 		locationList.put("Cirith Ungol", CirithUngol);
 		locationList.put("Minas Morgul", MinasMorgul);
-		locationList.put("Baraddur", Baraddur);
+		locationList.put("Barad-dur", Baraddur);
 		locationList.put("Harad", Harad);
 		locationList.put("Minas Tirith", MinasTirith);
 		locationList.put("Osgiliath", Osgiliath);
