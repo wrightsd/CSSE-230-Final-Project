@@ -138,6 +138,20 @@ public class Location {
 		return Integer.MAX_VALUE;
 	}
 	
+	
+	/**
+	 * Finds the connection to the next location and gives the overall cost.
+	 * @param next location to go to
+	 * @return the overall cos tof the connection
+	 */
+	public int getOverallCost(Location next) {
+		for(Path connection : connections) {
+			if(connection.getNextLocation() == next) {
+				return connection.getOverallCost();
+			}
+		}return Integer.MAX_VALUE;
+	}
+	
 	/**
 	 * Returns the name of the location.
 	 * @return the name of the location.

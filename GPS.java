@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class GPS {
 
@@ -9,6 +11,7 @@ public class GPS {
 	private HashMap<Location, Integer> distance;
 	private HashMap<Location, Location> predecessors;
 	private HashMap<String, Location> locationList;
+	private HashMap<Location, Integer> danger;
 
 
 	/**
@@ -137,6 +140,7 @@ public class GPS {
 			Trollshaws.addConnection(new Path(Weathertop, 155, 162));
 			Trollshaws.addConnection(new Path(Rivendell, 50, 55));
 			Trollshaws.addConnection(new Path(Gundabad, 200, 243));
+			Trollshaws.addConnection(new Path(GreenDragonInn, 375, 395));
 		}
 		{
 			Gundabad.addConnection(new Path(Trollshaws, 200, 243));
@@ -419,24 +423,34 @@ public class GPS {
 	 * @param endL, a string representing the end location.
 	 * @return
 	 */
-	public ArrayList<Location> findShortestPath(String startL, String endL) {
+	public void findShortestPaths(String startL, int restriction) {
+		Location start = this.getLocation(startL);
 		settledLocations = new HashSet<Location>();
 		unSettledLocations = new HashSet<Location>();
 		distance = new HashMap<Location, Integer>();
 		predecessors = new HashMap<Location, Location>();
-		Location start = this.getLocation(startL);
-		Location end = this.getLocation(endL);
 		distance.put(start, 0);
 		this.unSettledLocations.add(start);
 		while (this.unSettledLocations.size() > 0) {
 			Location l = getMinimun();
 			this.settledLocations.add(l);
 			this.unSettledLocations.remove(l);
-			findMinimalDistances(l);
+			findMinimalDistances(l, restriction);
 		}
-		return getPath(end);
-		
-		
+	}
+	
+	/**
+	 * Returns a list of all possible places that one can travel to.
+	 * @return an arraylist of Location names.
+	 */
+	public ArrayList<String> getDistanceList() {
+		Set<Location> locations = distance.keySet();
+		Iterator<Location> i = locations.iterator();
+		ArrayList<String> destinations = new ArrayList<String>();
+		while(i.hasNext()) {
+			destinations.add(i.next().getName());
+		}
+		return destinations;
 	}
 
 	
@@ -476,14 +490,18 @@ public class GPS {
 	 * Function that calculates distances between neighbors, and finds the shortest of the paths. 
 	 * @param Location l, whose distance between neighbors is being calculated.
 	 */
-	private void findMinimalDistances(Location l) {
+	private void findMinimalDistances(Location l, int restriction) {
 		ArrayList<Location> neighbors = l.getNeighbors(this.settledLocations);
 		for(Location next : neighbors) {
-			if(getShortestDistance(next) > getShortestDistance(l) + l.getDistance(next)) {
-				distance.put(next, getShortestDistance(l) + l.getDistance(next));
+			int chkdist = getShortestDistance(l) + l.getDistance(next);
+			if (getShortestDistance(next) > chkdist) {
+				if (chkdist <= restriction) {
+					distance.put(next,
+							getShortestDistance(l) + l.getDistance(next));
+					this.predecessors.put(next, l);
+					this.unSettledLocations.add(next);
+				}
 			}
-			this.predecessors.put(next,  l);
-			this.unSettledLocations.add(next);
 		}
 	}
 	
@@ -492,7 +510,8 @@ public class GPS {
 	 * @param Location end, the ending location.
 	 * @return ArrayList of Locations in the path. 
 	 */
-	private ArrayList<Location> getPath(Location end) {
+	public ArrayList<Location> getPath(String e) {
+		Location end = this.getLocation(e);
 		ArrayList<Location> pathRev = new ArrayList<Location>();
 		Location current = end;
 		if(predecessors.get(current)== null) {
@@ -516,26 +535,36 @@ public class GPS {
 	 * @param endL the ending location
 	 * @return an arrayList of locations that make up the path
 	 */
-	public ArrayList<Location> findLeastDangerousPath(String startL, String endL) {
+	public void findLeastDangerousPaths(String startL, int restriction) {
 		settledLocations = new HashSet<Location>();
 		unSettledLocations = new HashSet<Location>();
 		danger = new HashMap<Location, Integer>();
 		predecessors = new HashMap<Location, Location>();
 		Location start = this.getLocation(startL);
-		Location end = this.getLocation(endL);
 		danger.put(start, 0);
 		this.unSettledLocations.add(start);
 		while (this.unSettledLocations.size() > 0) {
 			Location l = getMinimunDanger();
 			this.settledLocations.add(l);
 			this.unSettledLocations.remove(l);
-			findMinimalDanger(l);
+			findMinimalDanger(l, restriction);
 		}
-		return getPath(end);
-		
-		
+			
 	}
-
+	/**
+	 * Finds the list of possible locations to travel to and returns them as 
+	 * a string of their names.
+	 * @return
+	 */
+	public ArrayList<String> getDangerList() {
+		Set<Location> locations = danger.keySet();
+		Iterator<Location> i = locations.iterator();
+		ArrayList<String> destinations = new ArrayList<String>();
+		while(i.hasNext()) {
+			destinations.add(i.next().getName());
+		}
+		return destinations;
+	}
 	
 	/**
 	 * Function that finds the closest location in the unsettledLoctations.
@@ -573,14 +602,16 @@ public class GPS {
 	 * Function that calculates distances between neighbors, and finds the shortest of the paths. 
 	 * @param Location l, whose distance between neighbors is being calculated.
 	 */
-	private void findMinimalDanger(Location l) {
+	private void findMinimalDanger(Location l, int restriction) {
 		ArrayList<Location> neighbors = l.getNeighbors(this.settledLocations);
-		for(Location next : neighbors) {
-			int nextcost = next.getCost();
-			if(getLeastDanger(next) > getLeastDanger(l) + l.getDistance(next) + nextcost) {
-				danger.put(next, getLeastDanger(l) + l.getDistance(next) + nextcost);
-				this.predecessors.put(next,  l);
-				this.unSettledLocations.add(next);
+		for (Location next : neighbors) {
+			int chkcost = getLeastDanger(l) + l.getOverallCost(next)+ next.getCost();
+			if (getLeastDanger(next) > chkcost) {
+				if (chkcost <= restriction) {
+					danger.put(next, chkcost);
+					this.predecessors.put(next, l);
+					this.unSettledLocations.add(next);
+				}
 			}
 		}
 	}
