@@ -15,7 +15,6 @@ public class PathfindingTest {
 		
 		ArrayList<Location> route = gps.findShortestPath("BarrowDowns", "Baraddur");
 		
-		
 		Iterator i = route.iterator();
 		Location l = null;
 		while(i.hasNext()) {

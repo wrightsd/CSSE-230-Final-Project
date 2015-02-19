@@ -9,6 +9,7 @@ public class GPS {
 	private HashMap<Location, Integer> distance;
 	private HashMap<Location, Location> predecessors;
 	private HashMap<String, Location> locationList;
+	private HashMap<Location, Integer> danger;
 
 
 	/**
@@ -352,14 +353,14 @@ public class GPS {
 
 		// Adds the locations to the HashMap
 
-		locationList.put("GreyHavens", GreyHavens);
-		locationList.put("BlueMountains", BlueMountains);
-		locationList.put("BagEnd", BagEnd);
-		locationList.put("GreenDragonInn", GreenDragonInn);
-		locationList.put("TomBombadilHouse", TomBombadilHouse);
-		locationList.put("BrandywineBridge", BrandywineBridge);
-		locationList.put("MidgewaterMarshes", MidgewaterMarshes);
-		locationList.put("BarrowDowns", BarrowDowns);
+		locationList.put("Grey Havens", GreyHavens);
+		locationList.put("Blue Mountains", BlueMountains);
+		locationList.put("Bag End", BagEnd);
+		locationList.put("Green Dragon Inn", GreenDragonInn);
+		locationList.put("Tom Bombadil House", TomBombadilHouse);
+		locationList.put("Brandywine Bridge", BrandywineBridge);
+		locationList.put("Midgewater Marshes", MidgewaterMarshes);
+		locationList.put("Barrow Downs", BarrowDowns);
 		locationList.put("Bree", Bree);
 		locationList.put("Weathertop", Weathertop);
 		locationList.put("Trollshaws", Trollshaws);
@@ -367,34 +368,34 @@ public class GPS {
 		locationList.put("Rivendell", Rivendell);
 		locationList.put("Moria", Moria);
 		locationList.put("Caradhras", Caradhras);
-		locationList.put("HighPass", HighPass);
+		locationList.put("High Pass", HighPass);
 		locationList.put("Lothlorien", Lothlorien);
-		locationList.put("AmonHen", AmonHen);
+		locationList.put("Amon Hen", AmonHen);
 		locationList.put("Argonath", Argonath);
-		locationList.put("FallsOfRauros", FallsOfRauros);
+		locationList.put("Falls Of Rauros", FallsOfRauros);
 		locationList.put("Isengard", Isengard);
-		locationList.put("FordsOfIsen", FordsOfIsen);
+		locationList.put("Fords Of Isen", FordsOfIsen);
 		locationList.put("Fangorn", Fangorn);
-		locationList.put("HelmsDeep", HelmsDeep);
-		locationList.put("DolGuldur", DolGuldur);
-		locationList.put("WoodlandRealm", WoodlandRealm);
+		locationList.put("Helms Deep", HelmsDeep);
+		locationList.put("Dol Guldur", DolGuldur);
+		locationList.put("Woodland Realm", WoodlandRealm);
 		locationList.put("Erebor", Erebor);
 		locationList.put("Esgaroth", Esgaroth);
 		locationList.put("Dale", Dale);
-		locationList.put("IronHills", IronHills);
-		locationList.put("DeadMarshes", DeadMarshes);
-		locationList.put("BlackGate", BlackGate);
-		locationList.put("MountDoom", MountDoom);
-		locationList.put("CirithUngol", CirithUngol);
-		locationList.put("MinasMorgul", MinasMorgul);
+		locationList.put("Iron Hills", IronHills);
+		locationList.put("Dead Marshes", DeadMarshes);
+		locationList.put("Black Gate", BlackGate);
+		locationList.put("Mount Doom", MountDoom);
+		locationList.put("Cirith Ungol", CirithUngol);
+		locationList.put("Minas Morgul", MinasMorgul);
 		locationList.put("Baraddur", Baraddur);
 		locationList.put("Harad", Harad);
-		locationList.put("MinasTirith", MinasTirith);
+		locationList.put("Minas Tirith", MinasTirith);
 		locationList.put("Osgiliath", Osgiliath);
 		locationList.put("Rhosgobel", Rhosgobel);
 		locationList.put("Meduseld", Meduseld);
 		locationList.put("Dunharrow", Dunharrow);
-		locationList.put("FieldOfCelebrant", FieldOfCelebrant);
+		locationList.put("Field Of Celebrant", FieldOfCelebrant);
 		locationList.put("Fornost", Fornost);
 		locationList.put("Pelargir", Pelargir);
 		
@@ -583,6 +584,10 @@ public class GPS {
 				this.unSettledLocations.add(next);
 			}
 		}
+	}
+	
+	public HashMap<String, Location> getList(){
+		return this.locationList;
 	}
 	
 	
