@@ -70,7 +70,7 @@ public class mapMaker extends JComponent{
 		super.paintComponent(g);
 		this.g = g;
 		this.g2d = (Graphics2D) g;
-		File mapfile = new File("middle-earth-map.jpg");
+		File mapfile = new File("Images\\middle-earth-map.jpg");
 		Image map1 = null;
 		try {
 			map1 = ImageIO.read(mapfile);
@@ -100,7 +100,7 @@ public class mapMaker extends JComponent{
 		}
 
 		userPanel.add(new JLabel("Initial Location"));
-		JComboBox initialPlaces = new JComboBox(this.locations);
+		final JComboBox initialPlaces = new JComboBox(this.locations);
 		initialPlaces.setMaximumSize(new Dimension(210, 20));
 		userPanel.add(initialPlaces);
 
@@ -108,12 +108,12 @@ public class mapMaker extends JComponent{
 
 		userPanel.add(new JLabel("Character"));
 		String[] characters = { "Aragorn", "Balrog", "Frodo", "Galadriel", "Gandalf", "Gimli"
-				, "lego gollum", "Legolas","nazgul","orc","Sam"};
+				, "Gollum", "Legolas","Nazgul","Orc","Sam"};
 		for (int i = 0; i < characters.length; i++){
 			characterNames[i] = characters[i];
 		}
 		createCharacters();
-		JComboBox characterList = new JComboBox(characters);
+		final JComboBox characterList = new JComboBox(characters);
 		characterList.setMaximumSize(new Dimension(210, 20));
 		userPanel.add(characterList);
 
@@ -138,14 +138,14 @@ public class mapMaker extends JComponent{
 				System.out.println(distanceOrTime);
 			}
 		});
-		ButtonGroup group = new ButtonGroup();
+		final ButtonGroup group = new ButtonGroup();
 		group.add(timeButton);
 		group.add(distanceButton);
 		userPanel.add(timeButton);
 		userPanel.add(distanceButton);
 //		Checkbox cbox = new Checkbox("Specific Restrictions",false);
 //		userPanel.add(cbox);
-		JTextField textInput = new JTextField(20);
+		final JTextField textInput = new JTextField(20);
 		JLabel label1 = new JLabel("Enter Integer Value");
 		textInput.setMaximumSize(new Dimension(210,20));
 		userPanel.add(label1);
@@ -154,7 +154,7 @@ public class mapMaker extends JComponent{
 		userPanel.add(new JLabel(" "));
 
 		userPanel.add(new JLabel("Final Location"));
-		JComboBox finalPlacesList = new JComboBox(this.locations);
+		final JComboBox finalPlacesList = new JComboBox(this.locations);
 		finalPlacesList.setMaximumSize(new Dimension(210, 20));
 		userPanel.add(finalPlacesList);
 
@@ -216,7 +216,7 @@ public class mapMaker extends JComponent{
 		});
 		userPanel.add(infoButton);
 
-		this.frame.add(userPanel, BorderLayout.EAST);
+		this.frame.add(userPanel,BorderLayout.EAST);
 		
 	}
 	
@@ -251,17 +251,17 @@ public class mapMaker extends JComponent{
 	}
 	
 	public void createCharacters(){
-		Character charac1 = new Character(null,"Aragorn",new ImageIcon("Aragorn.png"));
-		Character charac2 = new Character(null,"Balrog",new ImageIcon("Balrog.png"));
-		Character charac3 = new Character(null,"Frodo",new ImageIcon("Frodo.png"));
-		Character charac4 = new Character(null,"Galadriel",new ImageIcon("Galadriel.png"));
-		Character charac5 = new Character(null,"Gandalf",new ImageIcon("Gandalf.png"));
-		Character charac6 = new Character(null,"Gimli",new ImageIcon("Gimli.png"));
-		Character charac7 = new Character(null,"lego gollum",new ImageIcon("lego gollum.png"));
-		Character charac8 = new Character(null,"Legolas",new ImageIcon("Legolas.png"));
-		Character charac9 = new Character(null,"nazgui",new ImageIcon("nazgui.png"));
-		Character charac10 = new Character(null,"orc",new ImageIcon("orc.jpg"));
-		Character charac11 = new Character(null,"Sam",new ImageIcon("Sam.png"));
+		Character charac1 = new Character(null,"Aragorn",new ImageIcon("Images\\Aragorn.png"));
+		Character charac2 = new Character(null,"Balrog",new ImageIcon("Images\\Balrog.png"));
+		Character charac3 = new Character(null,"Frodo",new ImageIcon("Images\\Frodo.png"));
+		Character charac4 = new Character(null,"Galadriel",new ImageIcon("Images\\Galadriel.png"));
+		Character charac5 = new Character(null,"Gandalf",new ImageIcon("Images\\Gandalf.png"));
+		Character charac6 = new Character(null,"Gimli",new ImageIcon("Images\\Gimli.png"));
+		Character charac7 = new Character(null,"Gollum",new ImageIcon("Images\\lego gollum.png"));
+		Character charac8 = new Character(null,"Legolas",new ImageIcon("Images\\Legolas.png"));
+		Character charac9 = new Character(null,"Nazgul",new ImageIcon("Images\\nazgul.png"));
+		Character charac10 = new Character(null,"Orc",new ImageIcon("Images\\orc.png"));
+		Character charac11 = new Character(null,"Sam",new ImageIcon("Images\\Sam.png"));
 		
 		Character[] chara = {charac1,charac2,charac3,charac4,charac5,charac6,charac7,charac8,
 				charac9,charac10,charac11};

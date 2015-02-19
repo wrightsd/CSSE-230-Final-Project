@@ -50,7 +50,7 @@ public class infoPage {
 		infoFrame.setSize(new Dimension(620, 1000));
 		textPanel = new JPanel();
 		textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
-		File textFile = new File("Info Text");
+		File textFile = new File("src\\Info Text");
 		labels = new ArrayList<JLabel>();
 		try {
 			Scanner input = new Scanner(textFile);
