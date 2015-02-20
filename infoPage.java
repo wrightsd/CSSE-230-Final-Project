@@ -14,7 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 
 public class infoPage {
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/wenjun
 	private JFrame infoFrame;
 	// private JTextArea textPanel;// was JPANEL
 	private JPanel textPanel;
@@ -42,6 +45,7 @@ public class infoPage {
 		}
 		textPanel.updateUI();
 	}
+<<<<<<< HEAD
 
 	public infoPage() {
 		currentPosition = 0;
@@ -70,5 +74,34 @@ public class infoPage {
 		infoFrame.setVisible(true);
 	}
 }
+=======
+>>>>>>> origin/wenjun
 
+	public infoPage() {
+		currentPosition = 0;
+		infoFrame = new JFrame("Location Information");
+		infoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		infoFrame.setSize(new Dimension(620, 1000));
+		textPanel = new JPanel();
+		textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+		File textFile = new File("Info Text");
+		labels = new ArrayList<JLabel>();
+		try {
+			Scanner input = new Scanner(textFile);
+			while (input.hasNextLine()) {
+				labels.add(new JLabel(input.nextLine()));
+			}
+			input.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		JScrollBar scrollBar = new JScrollBar(JScrollBar.VERTICAL, 0, 50, 0,
+				labels.size());
+		scrollBar.addAdjustmentListener(new MyAdjustmentListener());
+		infoFrame.add(scrollBar, BorderLayout.EAST);
+		infoFrame.add(textPanel);
+		redraw();
+		infoFrame.setVisible(true);
+	}
 
+}

@@ -53,7 +53,12 @@ public class Location {
 		this.name = placeName;
 		this.gridX = gridX;
 		this.gridY = gridY;
+<<<<<<< HEAD
 		this.locationCostList = costList;
+=======
+		this.locationCostList.add(lowerCost);
+		this.locationCostList.add(higherCost);
+>>>>>>> origin/wenjun
 
 	}
 
@@ -138,6 +143,16 @@ public class Location {
 		return Integer.MAX_VALUE;
 	}
 	
+<<<<<<< HEAD
+=======
+	/**
+	 * Returns the name of the location.
+	 * @return the name of the location.
+	 */
+	public String getName() {
+		return this.name;
+	}
+>>>>>>> origin/wenjun
 	
 	/**
 	 * Finds the connection to the next location and gives the overall cost.
@@ -151,6 +166,7 @@ public class Location {
 			}
 		}return Integer.MAX_VALUE;
 	}
+<<<<<<< HEAD
 	
 	/**
 	 * Returns the name of the location.
@@ -159,4 +175,6 @@ public class Location {
 	public String getName() {
 		return this.name;
 	}
+=======
+>>>>>>> origin/wenjun
 }
