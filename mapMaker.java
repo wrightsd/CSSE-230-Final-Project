@@ -29,6 +29,14 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+/**
+ * 
+ * This class builds up our map for the navigation system
+ *
+ * @author kongw.
+ *         Created Feb 19, 2015.
+ */
+
 public class mapMaker extends JComponent{
 	public JFrame frame;
 	public String initialLocation;
@@ -37,11 +45,8 @@ public class mapMaker extends JComponent{
 	public String[] characterNames;
 	public String distanceOrTime;
 	public String costInput;
-	private Graphics g;
 	private Graphics2D g2d;
 	private boolean drawMover;
-	private Point2D.Double start;
-	private Point2D.Double end;
 	private ArrayList<Point2D.Double> nodes;
 	private Character charac;
 	private HashMap<String, Character> characters;
@@ -50,14 +55,18 @@ public class mapMaker extends JComponent{
 	private GPS gps;
 	private String[] locations;
 	
+	/**
+	 * 
+	 * Initialize all the fields in the constructor
+	 *
+	 * @param frame
+	 */
 	public mapMaker(JFrame frame) {
 		this.frame = frame;
 		this.drawMover = false;
-		this.start = null;
-		this.end = null;
 		this.charac = null;
-		this.nodes = new ArrayList<Point2D.Double>();
-		this.characters = new HashMap<String, Character>();
+		this.nodes = new ArrayList<>();
+		this.characters = new HashMap<>();
 		this.characterNames = new String[11];
 		this.reset = false;
 		this.tic = null;
@@ -65,10 +74,13 @@ public class mapMaker extends JComponent{
 		initLocations();
 	}
 	
+	/**
+	 * Paint all the components
+	 * Created all possible user buttons and action listeners
+	 */
 	@Override
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
-		this.g = g;
 		this.g2d = (Graphics2D) g;
 		File mapfile = new File("middle-earth-map.jpg");
 		Image map1 = null;
@@ -78,18 +90,22 @@ public class mapMaker extends JComponent{
 			exception.printStackTrace();
 		}
 		this.g2d.drawImage(map1, 20, 30,840,640, null);
-		if (nodes.size() != 0 && drawMover){
+		
+		// if drawMover is true, then draw the mover and path and let it move
+		if (this.nodes.size() != 0 && this.drawMover){
 			System.out.print("x");
-			this.charac = characters.get(character);
-			Point2D.Double ctpt = new Point2D.Double(nodes.get(0).x,nodes.get(0).y);
+			this.charac = this.characters.get(this.character);
+			Point2D.Double ctpt = new Point2D.Double(this.nodes.get(0).x,this.nodes.get(0).y);
 			this.charac.setCtPt(ctpt);
-			this.charac.drawOn(g2d);
+			this.charac.drawOn(this.g2d);
 			drawPath();
 			timePassed();
 		}
-		if (nodes.size() != 0 && charac != null){
+		// if "move" button is clicked, and timepassed() is already running, keep
+		// the path on the canvas and keep running the thread
+		if (this.nodes.size() != 0 && this.charac != null){
 			drawPath();
-			this.charac.drawOn(g2d);
+			this.charac.drawOn(this.g2d);
 		}
 		
 		JPanel userPanel = new JPanel();
@@ -110,7 +126,7 @@ public class mapMaker extends JComponent{
 		String[] characters = { "Aragorn", "Balrog", "Frodo", "Galadriel", "Gandalf", "Gimli"
 				, "lego gollum", "Legolas","nazgul","orc","Sam"};
 		for (int i = 0; i < characters.length; i++){
-			characterNames[i] = characters[i];
+			this.characterNames[i] = characters[i];
 		}
 		createCharacters();
 		JComboBox characterList = new JComboBox(characters);
@@ -121,21 +137,23 @@ public class mapMaker extends JComponent{
 
 		userPanel.add(new JLabel("Distance or Time"));
 		JRadioButton distanceButton = new JRadioButton("Distance");
-		// actionlistener of distanceButton
+		
+		// create actionlistener of distanceButton and 
+		// set up the field
 		distanceButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				distanceOrTime = "Distance";
-				System.out.println(distanceOrTime);
+				mapMaker.this.distanceOrTime = "Distance";
 			}
 		});
 		JRadioButton timeButton = new JRadioButton("Time");
-		// actionlistener of timeButton
+		
+		// create actionlistener of timeButton and set up the field
 		timeButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				distanceOrTime = "Time";
-				System.out.println(distanceOrTime);
+				mapMaker.this.distanceOrTime = "Time";
+				System.out.println(mapMaker.this.distanceOrTime);
 			}
 		});
 		ButtonGroup group = new ButtonGroup();
@@ -143,8 +161,6 @@ public class mapMaker extends JComponent{
 		group.add(distanceButton);
 		userPanel.add(timeButton);
 		userPanel.add(distanceButton);
-//		Checkbox cbox = new Checkbox("Specific Restrictions",false);
-//		userPanel.add(cbox);
 		JTextField textInput = new JTextField(20);
 		JLabel label1 = new JLabel("Enter Integer Value");
 		textInput.setMaximumSize(new Dimension(210,20));
@@ -163,17 +179,19 @@ public class mapMaker extends JComponent{
 		}
 		
 		JButton moveButton = new JButton("Move");
-		// actionlistener of moveButton
+		
+		// create actionlistener of moveButton
+		// set drawMover to be true and find the path as the input suggested
 		moveButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				costInput = textInput.getText();
-				initialLocation = (String) initialPlaces.getSelectedItem();
-				finalLocation = (String) finalPlacesList.getSelectedItem();
-				character = (String) characterList.getSelectedItem();
+				mapMaker.this.costInput = textInput.getText();
+				mapMaker.this.initialLocation = (String) initialPlaces.getSelectedItem();
+				mapMaker.this.finalLocation = (String) finalPlacesList.getSelectedItem();
+				mapMaker.this.character = (String) characterList.getSelectedItem();
 				findPath();
-				reset = false;
-				drawMover = true;
+				mapMaker.this.reset = false;
+				mapMaker.this.drawMover = true;
 				repaint();
 				System.out.println("Moved!");	
 			}
@@ -181,22 +199,24 @@ public class mapMaker extends JComponent{
 		userPanel.add(moveButton);
 		userPanel.add(new JLabel(" "));
 		JButton resetButton = new JButton("Reset");
-		// actionlistener of resetButton
+		
+		// create actionlistener of resetButton
+		// reset everything
 		resetButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				costInput = null;
-				initialLocation = null;
-				finalLocation = null;
-				character = null;
+				mapMaker.this.costInput = null;
+				mapMaker.this.initialLocation = null;
+				mapMaker.this.finalLocation = null;
+				mapMaker.this.character = null;
 				finalPlacesList.setSelectedIndex(0);
 				initialPlaces.setSelectedIndex(0);
 				characterList.setSelectedIndex(0);
 				group.clearSelection();
-				reset = true;
-				drawMover = false;
-				nodes = new ArrayList<Point2D.Double>();
+				mapMaker.this.reset = true;
+				mapMaker.this.drawMover = false;
+				mapMaker.this.nodes = new ArrayList<>();
 				repaint();
 				
 			}
@@ -205,37 +225,45 @@ public class mapMaker extends JComponent{
 		userPanel.add(resetButton);
 		userPanel.add(new JLabel(" "));
 		JButton infoButton = new JButton("Locations Informaion");
-		// actionlistener of infoButton
+		
+		// create actionlistener of infoButton
+		// draw a pop up window for information of the locations
 		infoButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				infoPage i = new infoPage();
+				new infoPage();
 			}
 			
 		});
 		userPanel.add(infoButton);
-
+		
+		// add the panel to the frame
 		this.frame.add(userPanel, BorderLayout.EAST);
 		
 	}
 	
+	/**
+	 * 
+	 * This is a method that starts the thread and let the mover move
+	 *
+	 */
 	public void timePassed(){
 			Runnable tickToc = new Runnable(){
 				  @Override
 				public void run(){
 					  try {
-						  for (int i = 1; i < nodes.size(); i++){
-							  Point2D.Double currentDest = nodes.get(i);
-							  charac.setEndPoint(currentDest);
-							  double diff = Math.sqrt(Math.pow(currentDest.x-charac.centerPoint.x, 2)+Math.pow(currentDest.y-charac.centerPoint.y, 2));
-							  while (diff > 0.001) {
+						  for (int i = 1; i < mapMaker.this.nodes.size(); i++){
+							  Point2D.Double currentDest = mapMaker.this.nodes.get(i);
+							  mapMaker.this.charac.setEndPoint(currentDest);
+							  double diff = Math.sqrt(Math.pow(currentDest.x-mapMaker.this.charac.centerPoint.x, 2)+Math.pow(currentDest.y-mapMaker.this.charac.centerPoint.y, 2));
+							  while (diff > 0.00000001) {
 								Thread.sleep(30);
-								if (charac != null){
-									charac.updatePosition();
-									diff = Math.sqrt(Math.pow(currentDest.x-charac.centerPoint.x, 2)+Math.pow(currentDest.y-charac.centerPoint.y, 2));
+								if (mapMaker.this.charac != null){
+									mapMaker.this.charac.updatePosition();
+									diff = Math.sqrt(Math.pow(currentDest.x-mapMaker.this.charac.centerPoint.x, 2)+Math.pow(currentDest.y-mapMaker.this.charac.centerPoint.y, 2));
 								}
-								drawMover = false;
+								mapMaker.this.drawMover = false;
 								repaint();
 							  }
 						  }
@@ -244,12 +272,17 @@ public class mapMaker extends JComponent{
 						}
 				  }
 			};
-			tic = new Thread(tickToc);
-			if (!reset){
-				tic.start();
+			this.tic = new Thread(tickToc);
+			if (!this.reset){
+				this.tic.start();
 			}
 	}
 	
+	/**
+	 * 
+	 * This method creates all the characters and put it into a hashmap
+	 *
+	 */
 	public void createCharacters(){
 		Character charac1 = new Character(null,"Aragorn",new ImageIcon("Aragorn.png"));
 		Character charac2 = new Character(null,"Balrog",new ImageIcon("Balrog.png"));
@@ -266,37 +299,48 @@ public class mapMaker extends JComponent{
 		Character[] chara = {charac1,charac2,charac3,charac4,charac5,charac6,charac7,charac8,
 				charac9,charac10,charac11};
 		
-		for (int i = 0; i < characterNames.length; i++){
-			characters.put(characterNames[i], chara[i]);
+		for (int i = 0; i < this.characterNames.length; i++){
+			this.characters.put(this.characterNames[i], chara[i]);
 		}
 	}
 	
+	/**
+	 * 
+	 * This method draws all the path on the canvas and mark the initial and
+	 * final location as red.
+	 *
+	 */
 	public void drawPath(){
 		for (int i = 0; i < this.nodes.size(); i++){
 			if (i != 0 && i != this.nodes.size()-1){
-				Ellipse2D dot = new Ellipse2D.Double(nodes.get(i).x,nodes.get(i).y,10,10);
-				g2d.draw(dot);
-				g2d.setColor(Color.blue);
-				g2d.fill(dot);
+				Ellipse2D dot = new Ellipse2D.Double(this.nodes.get(i).x,this.nodes.get(i).y,10,10);
+				this.g2d.draw(dot);
+				this.g2d.setColor(Color.blue);
+				this.g2d.fill(dot);
 			}
 			if (i == 0 || i == this.nodes.size()-1){
-				Ellipse2D dot = new Ellipse2D.Double(nodes.get(i).x,nodes.get(i).y,10,10);
-				g2d.draw(dot);
-				g2d.setColor(Color.red);
-				g2d.fill(dot);
+				Ellipse2D dot = new Ellipse2D.Double(this.nodes.get(i).x,this.nodes.get(i).y,10,10);
+				this.g2d.draw(dot);
+				this.g2d.setColor(Color.red);
+				this.g2d.fill(dot);
 			}
 		}
 		
-		for (int i = 0; i < nodes.size()-1; i++){
-			g2d.setStroke(new BasicStroke(2));
-			g2d.setColor(Color.blue);
-			g2d.drawLine((int)nodes.get(i).x+5, (int)nodes.get(i).y+5, (int)nodes.get(i+1).x+5, (int)nodes.get(i+1).y+5);
+		for (int i = 0; i < this.nodes.size()-1; i++){
+			this.g2d.setStroke(new BasicStroke(2));
+			this.g2d.setColor(Color.blue);
+			this.g2d.drawLine((int)this.nodes.get(i).x+5, (int)this.nodes.get(i).y+5, (int)this.nodes.get(i+1).x+5, (int)this.nodes.get(i+1).y+5);
 		}
 		
 	}
 	
+	/**
+	 * 
+	 * initialize all the locations and store it into an array of strings
+	 *
+	 */
 	public void initLocations(){
-		ArrayList<String> locs = new ArrayList<String>();
+		ArrayList<String> locs = new ArrayList<>();
 		HashMap<String, Location> temp= this.gps.getList();
 		for (String key: temp.keySet()){
 			locs.add(key);
@@ -309,28 +353,34 @@ public class mapMaker extends JComponent{
 		}
 	}
 	
+	/**
+	 * 
+	 * This method call the methods inside the path class and find the most appropriate
+	 * path for the mover to move.
+	 *
+	 */
 	public void findPath(){
-		ArrayList<Location> route = new ArrayList<Location>();
-		if (!initialLocation.equals("None") && !finalLocation.equals("None")){
-			if (costInput == null || costInput.length() == 0){
-				if (distanceOrTime == null || distanceOrTime.equals("Distance")){
+		ArrayList<Location> route = new ArrayList<>();
+		if (!this.initialLocation.equals("None") && !this.finalLocation.equals("None")){
+			if (this.costInput == null || this.costInput.length() == 0){
+				if (this.distanceOrTime == null || this.distanceOrTime.equals("Distance")){
 					this.gps.findShortestPaths(this.initialLocation,Integer.MAX_VALUE);
-					route = this.gps.getPath(finalLocation);
+					route = this.gps.getPath(this.finalLocation);
 				}
-				else if (distanceOrTime.equals("Time")){
-					this.gps.findLeastDangerousPaths(initialLocation, Integer.MAX_VALUE);
-					route = this.gps.getPath(finalLocation);
+				else if (this.distanceOrTime.equals("Time")){
+					this.gps.findLeastDangerousPaths(this.initialLocation, Integer.MAX_VALUE);
+					route = this.gps.getPath(this.finalLocation);
 				}
 			}
 			else{
-				int costinput = Integer.parseInt(costInput);
-				if (distanceOrTime.equals("Distance")){
-					this.gps.findShortestPaths(initialLocation, costinput);
-					route = this.gps.getPath(finalLocation);
+				int costinput = Integer.parseInt(this.costInput);
+				if (this.distanceOrTime.equals("Distance")){
+					this.gps.findShortestPaths(this.initialLocation, costinput);
+					route = this.gps.getPath(this.finalLocation);
 				}
-				else if (distanceOrTime.equals("Time")){
-					this.gps.findLeastDangerousPaths(initialLocation, costinput);
-					route = this.gps.getPath(finalLocation);
+				else if (this.distanceOrTime.equals("Time")){
+					this.gps.findLeastDangerousPaths(this.initialLocation, costinput);
+					route = this.gps.getPath(this.finalLocation);
 				}
 				else{
 					String infomessage = "You need to specify which one to restrict.";
@@ -338,20 +388,20 @@ public class mapMaker extends JComponent{
 				}
 			}
 		}
-		else if (initialLocation.equals("None")){
+		else if (this.initialLocation.equals("None")){
 			String infomessage = "You need to select a initial position to start!";
 			JOptionPane.showMessageDialog(this.frame,infomessage,"Error",JOptionPane.INFORMATION_MESSAGE);
 			
 		}
-		else if (finalLocation.equals("None")){
-			if (costInput == null || costInput.length() == 0){
+		else if (this.finalLocation.equals("None")){
+			if (this.costInput == null || this.costInput.length() == 0){
 				String infomessage = "You need to either select a destination or specify your constraints!";
 				JOptionPane.showMessageDialog(this.frame,infomessage,"Error",JOptionPane.INFORMATION_MESSAGE);
 			}
 			else{
-				if (distanceOrTime.equals("Distance")){
-					int costinput = Integer.parseInt(costInput);
-					this.gps.findShortestPaths(initialLocation, costinput);
+				if (this.distanceOrTime.equals("Distance")){
+					int costinput = Integer.parseInt(this.costInput);
+					this.gps.findShortestPaths(this.initialLocation, costinput);
 					ArrayList<String> destination = this.gps.getDistanceList();
 					String[] possibleDest = new String[destination.size()];
 					for (int i = 0; i < destination.size(); i++){
@@ -368,9 +418,9 @@ public class mapMaker extends JComponent{
 					System.out.println(this.finalLocation);
 					route = this.gps.getPath(this.finalLocation);
 				}
-				else if (distanceOrTime.equals("Time")){
-					int costinput = Integer.parseInt(costInput);
-					this.gps.findLeastDangerousPaths(initialLocation, costinput);
+				else if (this.distanceOrTime.equals("Time")){
+					int costinput = Integer.parseInt(this.costInput);
+					this.gps.findLeastDangerousPaths(this.initialLocation, costinput);
 					ArrayList<String> destination = this.gps.getDangerList();
 					String[] possibleDest = new String[destination.size()];
 					for (int i = 0; i < destination.size(); i++){
@@ -398,7 +448,7 @@ public class mapMaker extends JComponent{
 			for (int i = 0; i < route.size(); i++){
 				double x = 4*route.get(i).getGridX()+20;
 				double y = 4*route.get(i).getGridY()+30;
-				nodes.add(new Point2D.Double(x,y));
+				this.nodes.add(new Point2D.Double(x,y));
 			}
 		}
 		else {
@@ -407,6 +457,14 @@ public class mapMaker extends JComponent{
 		}
 	}
 	
+	/**
+	 * 
+	 * This method chops the latter part of the string where it starts with
+	 * a parantheses.
+	 *
+	 * @param e
+	 * @return
+	 */
 	public String modifyString(String e){
 		String ret = "";
 		for (int i = 0; i < e.length(); i++){
